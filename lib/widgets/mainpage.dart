@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
-// import '../widgets/loginPage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/loginPage.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +24,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  SharedPreferences sharedPreferences;
+  // SharedPreferences sharedPreferences;
 
   @override
   void initState() {
@@ -65,7 +65,9 @@ class _MainPageState extends State<MainPage> {
       style: optionStyle,
     ),
   ];
+
   int selectedIndex = 0;
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -116,7 +118,10 @@ class _MainPageState extends State<MainPage> {
             () => {
                   // sharedPreferences.clear();
                   // sharedPreferences.commit();
-                  // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginPage()),
+                      (Route<dynamic> route) => false)
                 }),
       ])),
       bottomNavigationBar: FFNavigationBar(

@@ -47,6 +47,11 @@ class _LoginPageState extends State<LoginPage> {
               );
             },
           );
+
+          setState(() {
+            _email.text = '';
+            _password.text = '';
+          });
         }
       });
     } catch (e) {
