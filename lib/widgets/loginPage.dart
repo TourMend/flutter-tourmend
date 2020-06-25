@@ -1,10 +1,9 @@
-import 'dart:convert';
+import '../services/loginSignup.dart';
 import './signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import '../../src/main/mainpage.dart';
-import 'dart:async';
+import './mainpage.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,37 +11,46 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _user = new TextEditingController();
-  TextEditingController _pass = new TextEditingController();
+  TextEditingController _email;
+  TextEditingController _password;
+  GlobalKey<FormState> _formKey;
 
-  Future signIn() async {
-    const url = "http://localhost/TourMendWebServices/login.php";
-    final response = await http.post(url, body: {
-      "username": _user.text,
-      "password": _pass.text,
-    });
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController();
+    _password = TextEditingController();
+    _formKey = GlobalKey();
+  }
 
-    final message = jsonDecode(response.body);
-    if (message == 'Login Matched') {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainPage()));
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: new Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: new Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+  _logIn() {
+    try {
+      LoginSignup.login(_email.text, _password.text).then((result) {
+        if (result == '1') {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MainPage()));
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: new Text(
+                    'Incorrect email or password.\n Please try again!'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
           );
-        },
-      );
+        }
+      });
+    } catch (e) {
+      print("Error:" + e.toString());
     }
   }
 
@@ -95,7 +103,9 @@ class _LoginPageState extends State<LoginPage> {
           margin: EdgeInsets.only(top: 30.0),
           child: RaisedButton(
             onPressed: () {
-              signIn();
+              if (_formKey.currentState.validate()) {
+                _logIn();
+              }
             },
             elevation: 0.0,
             color: Colors.blue,
@@ -113,38 +123,52 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container textSection() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            controller: _user,
-            cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.black),
-              labelText: 'Email',
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue)),
-              hintStyle: TextStyle(color: Colors.black),
+  Form textSection() {
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: _email,
+              cursorColor: Colors.black,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.email, color: Colors.black),
+                labelText: 'Email',
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue)),
+                hintStyle: TextStyle(color: Colors.black),
+              ),
+              validator: (val) {
+                if (val.isEmpty) {
+                  return 'Email is required!';
+                } else if (!EmailValidator.Validate(val, true, true)) {
+                  return 'Invalid email address!';
+                } else
+                  return null;
+              },
             ),
-          ),
-          SizedBox(height: 30.0),
-          TextFormField(
-            controller: _pass,
-            cursorColor: Colors.black,
-            obscureText: true,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.black),
-              labelText: 'Password',
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue)),
-              hintStyle: TextStyle(color: Colors.white70),
+            SizedBox(height: 30.0),
+            TextFormField(
+              controller: _password,
+              cursorColor: Colors.black,
+              obscureText: true,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock, color: Colors.black),
+                labelText: 'Password',
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue)),
+                hintStyle: TextStyle(color: Colors.white70),
+              ),
+              validator: (val) => val.length < 6
+                  ? 'Password must be atleast 6 characters long!'
+                  : null,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

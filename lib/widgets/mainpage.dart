@@ -1,10 +1,7 @@
-// import 'dart:convert';
-// import 'package:flutter/services.dart';
-// import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
-import '../widgets/loginPage.dart';
+// import '../widgets/loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
@@ -32,17 +29,17 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
+    // checkLoginStatus();
   }
 
-  checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
-    }
-  }
+  // checkLoginStatus() async {
+  //   sharedPreferences = await SharedPreferences.getInstance();
+  //   if (sharedPreferences.getString("token") == null) {
+  //     Navigator.of(context).pushAndRemoveUntil(
+  //         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+  //         (Route<dynamic> route) => false);
+  //   }
+  // }
 
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30);

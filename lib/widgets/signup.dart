@@ -1,4 +1,4 @@
-import 'package:http/http.dart' as http;
+import '../services/loginSignup.dart';
 import 'package:flutter/material.dart';
 import './loginPage.dart';
 import 'package:email_validator/email_validator.dart';
@@ -13,60 +13,62 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // GlobalKey<ScaffoldState> _scaffoldKey;
+  GlobalKey<ScaffoldState> _scaffoldKey;
 
   TextEditingController _username;
   TextEditingController _email;
   TextEditingController _password;
   TextEditingController _confirmpass;
 
-  GlobalKey<FormState> formKey;
+  GlobalKey<FormState> _formKey;
 
   @override
   void initState() {
     super.initState();
-    // _scaffoldKey = GlobalKey();
+    _scaffoldKey = GlobalKey();
 
     _username = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
     _confirmpass = TextEditingController();
 
-    formKey = GlobalKey<FormState>();
+    _formKey = GlobalKey<FormState>();
   }
 
-  // void _clearValues() {
-  //   _username.text = '';
-  //   _email.text = '';
-  //   _password.text = '';
-  //   _confirmpass.text = '';
-  // }
+  void _clearValues() {
+    _username.text = '';
+    _email.text = '';
+    _password.text = '';
+    _confirmpass.text = '';
+  }
 
-  // _showSnackBar(context, message) {
-  //   _scaffoldKey.currentState.showSnackBar(
-  //     SnackBar(
-  //       content: Text(message),
-  //     ),
-  //   );
-  // }
+  void _showSnackBar(context, message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
 
-  register() {
-    try {
-      const url = "http://localhost/TourMendWebServices/register.php";
-      //post data into the url
-      http.post(url, body: {
-        "username": _username.text,
-        "email": _email.text,
-        "password": _password.text
-      });
-    } catch (e) {
-      return "Error!" + e.toString();
-    }
+  _signUp() {
+    LoginSignup.signup(_username.text, _email.text, _password.text)
+        .then((result) {
+      print(result);
+      if (result == '1') {
+        _clearValues();
+        _showSnackBar(context, 'User successfully created!');
+      } else if (result == '0') {
+        _clearValues();
+        _showSnackBar(context, 'Error while registering user!');
+      } else {
+        _showSnackBar(context, 'This email address already has an account');
+      }
+    });
   }
 
   Widget allTextField() {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Container(
         padding: new EdgeInsets.only(top: 20),
         child: Column(
@@ -133,7 +135,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _submitButton() {
     return InkWell(
-        onTap: register,
+        onTap: () {
+          if (_formKey.currentState.validate()) {
+            _signUp();
+          }
+        },
         child: Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.symmetric(vertical: 15),
@@ -230,6 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
           child: Container(
         height: MediaQuery.of(context).size.height,
