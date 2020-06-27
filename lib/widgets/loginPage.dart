@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/loginSignup.dart';
-import 'signup.dart';
+import 'signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'mainPage.dart';
