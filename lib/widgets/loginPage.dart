@@ -1,8 +1,9 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/loginSignup.dart';
-import './signup.dart';
+import 'signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './mainpage.dart';
+import 'mainPage.dart';
 import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,9 +12,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _showPassword = false;
+
   TextEditingController _email;
   TextEditingController _password;
   GlobalKey<FormState> _formKey;
+
+  SharedPreferences _loginData;
 
   @override
   void initState() {
@@ -21,12 +26,36 @@ class _LoginPageState extends State<LoginPage> {
     _email = TextEditingController();
     _password = TextEditingController();
     _formKey = GlobalKey();
+
+    _checkIfAlreadyLogin();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  void _checkIfAlreadyLogin() async {
+    _loginData = await SharedPreferences.getInstance();
+    final newuser = (_loginData.getBool('login') ?? true);
+    print(newuser);
+    if (newuser == false) {
+      Navigator.pushReplacement(
+          context, new MaterialPageRoute(builder: (context) => MainPage()));
+    }
   }
 
   _logIn() {
     try {
       LoginSignup.login(_email.text, _password.text).then((result) {
         if (result == '1') {
+          // using shared preferences to log in
+          print('Storing in shared preferenes');
+          _loginData.setBool('login', false);
+          _loginData.setString('user_email', _email.text);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => MainPage()));
         } else {
@@ -34,8 +63,8 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: new Text(
-                    'Incorrect email or password.\n Please try again!'),
+                title:
+                    new Text('Incorrect email or password.\nPlease try again!'),
                 actions: <Widget>[
                   FlatButton(
                     child: new Text("OK"),
@@ -108,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
           margin: EdgeInsets.only(top: 30.0),
           child: RaisedButton(
             onPressed: () {
+              // if form is valid log in
               if (_formKey.currentState.validate()) {
                 _logIn();
               }
@@ -159,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: _password,
               cursorColor: Colors.black,
-              obscureText: true,
+              obscureText: !_showPassword,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 icon: Icon(Icons.lock, color: Colors.black),
@@ -167,6 +197,14 @@ class _LoginPageState extends State<LoginPage> {
                 border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
                 hintStyle: TextStyle(color: Colors.white70),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.remove_red_eye,
+                    color: this._showPassword ? Colors.blue : Colors.grey,
+                  ),
+                  onPressed: () =>
+                      setState(() => _showPassword = !_showPassword),
+                ),
               ),
               validator: (val) => val.length < 6
                   ? 'Password must be atleast 6 characters long!'

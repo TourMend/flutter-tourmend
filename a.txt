@@ -28,7 +28,7 @@ class _MyLoginPageState extends State<_MyLoginPage>
     super.initState();
     _logoAnimationController = new AnimationController(
       vsync: this,
-      duration: new Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 100),
     );
 
     _logoAnimation = new CurvedAnimation(

@@ -1,6 +1,7 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/loginSignup.dart';
 import 'package:flutter/material.dart';
-import './loginPage.dart';
+import 'loginPage.dart';
 import 'package:email_validator/email_validator.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -50,7 +51,12 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  _signUp() {
+  _signUp() async {
+    //using shared preferences to store some values
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString('username', _username.text);
+    sharedPreferences.setString('user_email', _email.text);
+
     LoginSignup.signup(_username.text, _email.text, _password.text)
         .then((result) {
       print(result);
