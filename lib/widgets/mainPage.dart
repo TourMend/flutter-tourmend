@@ -44,7 +44,7 @@ class _MainPageState extends State<MainPage> {
               ),
               SizedBox(height: 16),
               new GestureDetector(
-                onTap: _handleLogout,
+                onTap: () => Navigator.of(context).pop(true),
                 child: Text("YES"),
               ),
             ],
@@ -53,13 +53,34 @@ class _MainPageState extends State<MainPage> {
         false;
   }
 
-  void _handleLogout() async {
-    SharedPreferences logindata = await SharedPreferences.getInstance();
-    logindata.remove("user_email");
-    logindata.clear();
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-        (Route<dynamic> route) => false);
+  Future<bool> _handleLogout() async {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('LogOut?'),
+            content: new Text('Are you sure that you want to logout?'),
+            actions: <Widget>[
+              new GestureDetector(
+                onTap: () => Navigator.of(context).pop(false),
+                child: Text("Cancel"),
+              ),
+              SizedBox(height: 16),
+              new GestureDetector(
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.remove('user_email');
+                  prefs.clear();
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+                child: Text("Logout"),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30);
@@ -129,7 +150,7 @@ class _MainPageState extends State<MainPage> {
           CustomListTile(
             Icons.lock,
             'Log Out',
-            _onBackPressed,
+            _handleLogout,
           )
         ])),
         bottomNavigationBar: FFNavigationBar(
