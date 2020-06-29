@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
+import 'package:flutter_app/widgets/mainPageWidgets/homePage.dart';
 import './loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import './mainPageWidgets/homePage.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -84,10 +86,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30);
-  static const List<Widget> _widgetOption = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
+  static List<Widget> _widgetOption = <Widget>[
+    HomePage(
+      title: 'Tourmend Home Page',
     ),
     Text(
       'Index 1: Places',

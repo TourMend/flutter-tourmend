@@ -44,7 +44,11 @@ class _LoginPageState extends State<LoginPage> {
     print(newuser);
     if (newuser == false) {
       Navigator.pushReplacement(
-          context, new MaterialPageRoute(builder: (context) => MainPage()));
+          context,
+          new MaterialPageRoute(
+              builder: (context) => MainPage(
+                    title: 'Tourmend Main Page',
+                  )));
     }
   }
 
