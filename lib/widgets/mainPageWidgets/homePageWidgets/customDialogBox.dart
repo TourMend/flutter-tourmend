@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/customListTile.dart';
+import 'package:flutter_app/widgets/mainPageWidgets/homePageWidgets/customListTile.dart';
 
 class CustomDialogBox extends StatelessWidget {
   CustomDialogBox({this.userEmail, this.logoutFunciton});

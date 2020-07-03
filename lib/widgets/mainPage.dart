@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/homePage.dart';
+import 'package:flutter_app/widgets/mainPageWidgets/homePageWidgets/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './mainPageWidgets/homePage.dart';
+import 'mainPageWidgets/homePageWidgets/homePage.dart';
+import 'mainPageWidgets/placesWidgets/places.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -67,16 +68,17 @@ class _MainPageState extends State<MainPage> {
     HomePage(
       title: 'Tourmend Home Page',
     ),
+    PlacesPage(),
     Text(
-      'Index 1: Places',
+      'Index 3: Events',
       style: optionStyle,
     ),
     Text(
-      'Index 2: News',
+      'Index 4: News',
       style: optionStyle,
     ),
     Text(
-      'Index 3: Saved',
+      'Index 5: Saved',
       style: optionStyle,
     ),
   ];
@@ -106,6 +108,10 @@ class _MainPageState extends State<MainPage> {
             FFNavigationBarItem(
               iconData: Icons.home,
               label: 'Home',
+            ),
+            FFNavigationBarItem(
+              iconData: Icons.place,
+              label: 'Places',
             ),
             FFNavigationBarItem(
               iconData: Icons.event,

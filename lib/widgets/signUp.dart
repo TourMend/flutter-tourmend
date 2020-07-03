@@ -280,7 +280,7 @@ class _SignUpPageState extends State<SignUpPage> {
               alignment: Alignment.bottomCenter,
               child: _loginAccountLabel(),
             ),
-            Positioned(top: 30, left: 10, child: _backButton()),
+            Positioned(top: 30, child: _backButton()),
           ],
         ),
       )),
