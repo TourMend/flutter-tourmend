@@ -1,6 +1,7 @@
+import 'forgotPasswordWidgets/emailPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/loginSignup.dart';
-import 'signUp.dart';
+import 'signUpPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'mainPage.dart';
@@ -84,12 +85,30 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _logIn() {
-    try {
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _logIn() async {
+    if (_formKey.currentState.validate()) {
       LoginSignup.login(_email.text, _password.text).then((result) {
+        print(result);
         if (result == '1') {
-          // using shared preferences to log in
-          print('Storing in shared preferenes');
           _loginData.setBool('login', false);
           _loginData.setString('user_email', _email.text);
           Navigator.pushAndRemoveUntil(
@@ -100,33 +119,20 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               (route) => false);
-        } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title:
-                    new Text('Incorrect email or password.\nPlease try again!'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: new Text("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-
+        } else if (result == '0') {
           setState(() {
             _email.text = '';
             _password.text = '';
           });
+          _showDialog('Incorrect username or password!');
+        } else if (result == '3') {
+          // show dialog box
+          _showDialog('Activate account first!');
+        } else {
+          // show dialog box
+          _showDialog('Internal Server Error!');
         }
       });
-    } catch (e) {
-      print("Error:" + e.toString());
     }
   }
 
@@ -143,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
             child: new Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -154,6 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                           children: <Widget>[
                             headerSection(),
                             textSection(),
+                            forgotPasswordLabel(),
                             buttonSection(),
                             divider(),
                             gmailButton(),
@@ -263,27 +270,28 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
       alignment: Alignment.center,
-      child: Text("TourMend",
-          style: TextStyle(
-              color: Color(0xfff00BFFF),
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold)),
+      child: Text(
+        "TourMend",
+        style: TextStyle(
+          color: Color(0xfff00BFFF),
+          fontSize: 40.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
   Widget createAccountLabel() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
       alignment: Alignment.bottomCenter,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Don\'t have an account ?',
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            'Don\'t have an account?',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
           SizedBox(
             width: 10,
@@ -297,6 +305,37 @@ class _LoginPageState extends State<LoginPage> {
               'Register',
               style: TextStyle(
                   color: Color(0xfff00BFFF),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget forgotPasswordLabel() {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Forgot Password?',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EmailPage()));
+            },
+            child: Text(
+              'Click here!',
+              style: TextStyle(
+                  color: Colors.red[800],
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),

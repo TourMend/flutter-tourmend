@@ -17,6 +17,11 @@ class PlacesPageState extends State<PlacesPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text('Places'),
+          ),
+        ),
         body: JsonListView(),
       ),
     );
