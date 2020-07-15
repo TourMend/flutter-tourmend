@@ -22,7 +22,15 @@ if (isset($_GET['page_number'])) {
             $rowArray =  array();
 
             while ($row = mysqli_fetch_assoc($result)) {
-                $rowItems = array('id' => $row['id'], 'placeName' => $row['placename'], 'imgURL' => $row['placeimage'], 'destination' => $row['dst']);
+                $rowItems = array(
+                    'id' => $row['id'],
+                    'placeName' => $row['placename'],
+                    'imgURL' => $row['placeimage'],
+                    'destination' => $row['dst'],
+                    'info' => $row['info'],
+                    'itinerary' => $row['Itinerary'],
+                    'map' => $row['map'],
+                );
                 array_push($rowArray, $rowItems);
             }
 

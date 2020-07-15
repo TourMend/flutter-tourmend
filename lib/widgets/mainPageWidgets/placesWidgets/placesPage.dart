@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/services/fetchPlaces.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/placesWidgets/modal/places.dart';
+import 'package:flutter_app/widgets/mainPageWidgets/placesWidgets/nestedBar.dart';
+import '../../../services/fetchPlaces.dart';
+import 'jsonListView.dart';
+import 'modal/places.dart';
 
 class PlacesPage extends StatefulWidget {
   final String title;
@@ -71,6 +73,7 @@ class _PlacesPageState extends State<PlacesPage> {
                 child: CircularProgressIndicator(),
               );
             }
+
             return ListView.builder(
                 itemCount: placesData.length,
                 controller: _scrollController,
@@ -84,7 +87,16 @@ class _PlacesPageState extends State<PlacesPage> {
                     }
                   }
                   return GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NestedTabBar(
+                            value: placesData[index],
+                          ),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: EdgeInsets.all(10.0),
                       margin: EdgeInsets.all(10.0),

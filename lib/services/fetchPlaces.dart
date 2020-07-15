@@ -22,6 +22,9 @@ class FetchPlaces {
               id: place['id'],
               placesImageURL: place['imgURL'],
               destination: place['destination'],
+              map: place['map'],
+              info: place['info'],
+              itinerary: place['itinerary'],
             );
 
             places.add(placeData);
