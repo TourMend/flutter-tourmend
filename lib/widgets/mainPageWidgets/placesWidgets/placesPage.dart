@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/placesWidgets/nestedBar.dart';
+import 'nestedTabBar.dart';
 import '../../../services/fetchPlaces.dart';
-import 'jsonListView.dart';
 import 'modal/places.dart';
 
 class PlacesPage extends StatefulWidget {
