@@ -23,6 +23,33 @@ class _ForgotPasswordState extends State<EmailPage> {
     _email = TextEditingController();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: _isLoading
+          ? Center(
+              child: SizedBox(
+                height: 200.0,
+                width: 200.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 5.0,
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: EmailOTP(
+                formKey: _formKey,
+                function: _reset,
+                heading: 'Enter email address here.',
+                buttonText: 'Submit Email',
+                textSection: textSection(),
+                context: context,
+              ),
+            ),
+    );
+  }
+
   void _showSnackBar(context, message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -90,33 +117,6 @@ class _ForgotPasswordState extends State<EmailPage> {
           },
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: _isLoading
-          ? Center(
-              child: SizedBox(
-                height: 200.0,
-                width: 200.0,
-                child: CircularProgressIndicator(
-                  strokeWidth: 5.0,
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              child: EmailOTP(
-                formKey: _formKey,
-                function: _reset,
-                heading: 'Enter email address here.',
-                buttonText: 'Submit Email',
-                textSection: textSection(),
-                context: context,
-              ),
-            ),
     );
   }
 }

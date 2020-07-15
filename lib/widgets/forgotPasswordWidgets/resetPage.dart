@@ -25,6 +25,23 @@ class _ResetPageState extends State<ResetPage> {
     _confirmPass = TextEditingController();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: SingleChildScrollView(
+        child: EmailOTP(
+          formKey: _formKey,
+          function: _submitPass,
+          heading: 'Enter new password.',
+          buttonText: 'Update password',
+          textSection: textSection(),
+          context: context,
+        ),
+      ),
+    );
+  }
+
   void _showSnackBar(context, message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -112,23 +129,6 @@ class _ResetPageState extends State<ResetPage> {
                   return null;
                 }),
           ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: SingleChildScrollView(
-        child: EmailOTP(
-          formKey: _formKey,
-          function: _submitPass,
-          heading: 'Enter new password.',
-          buttonText: 'Update password',
-          textSection: textSection(),
-          context: context,
         ),
       ),
     );

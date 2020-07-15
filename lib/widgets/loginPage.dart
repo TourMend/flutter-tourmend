@@ -32,6 +32,49 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(statusBarColor: Colors.transparent));
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: new Stack(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 3,
+                        child: ListView(
+                          children: <Widget>[
+                            headerSection(),
+                            textSection(),
+                            forgotPasswordLabel(),
+                            buttonSection(),
+                            divider(),
+                            gmailButton(),
+                            createAccountLabel(),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     _email.dispose();
@@ -134,49 +177,6 @@ class _LoginPageState extends State<LoginPage> {
         }
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
-        .copyWith(statusBarColor: Colors.transparent));
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: new Stack(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 3,
-                        child: ListView(
-                          children: <Widget>[
-                            headerSection(),
-                            textSection(),
-                            forgotPasswordLabel(),
-                            buttonSection(),
-                            divider(),
-                            gmailButton(),
-                            createAccountLabel(),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Column buttonSection() {

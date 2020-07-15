@@ -45,6 +45,74 @@ class _HomePageState extends State<HomePage> {
     _getUserEmail();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(children: <Widget>[
+        GoogleMap(
+          initialCameraPosition: _initialPosition,
+          mapType: MapType.normal,
+          onMapCreated: (controller) {
+            _mapController = controller;
+            _getCurrentLocation();
+          },
+          onTap: (position) {
+            _mapController.animateCamera(CameraUpdate.newLatLng(position));
+            _addMarker(position);
+          },
+          markers: _markers.toSet(),
+          circles: Set.of((_circle != null) ? [_circle] : []),
+        ),
+        Positioned(
+          top: 30,
+          right: 15,
+          left: 15,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.go,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                        hintText: "Search here"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          child: CustomDialogBox(
+                            userEmail: userEmail,
+                            logoutFunciton: _handleLogout,
+                          ));
+                    },
+                    child: CircleAvatar(
+                        radius: 15.0,
+                        backgroundColor: Colors.deepPurple,
+                        child: Icon(
+                          Icons.portrait,
+                          size: 20.0,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
   void _addMarker(position) {
     var id = Random().nextInt(100);
 
@@ -150,73 +218,5 @@ class _HomePageState extends State<HomePage> {
       _locationSubscription.cancel();
     }
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: <Widget>[
-        GoogleMap(
-          initialCameraPosition: _initialPosition,
-          mapType: MapType.normal,
-          onMapCreated: (controller) {
-            _mapController = controller;
-            _getCurrentLocation();
-          },
-          onTap: (position) {
-            _mapController.animateCamera(CameraUpdate.newLatLng(position));
-            _addMarker(position);
-          },
-          markers: _markers.toSet(),
-          circles: Set.of((_circle != null) ? [_circle] : []),
-        ),
-        Positioned(
-          top: 30,
-          right: 15,
-          left: 15,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    cursorColor: Colors.black,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                        hintText: "Search here"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          child: CustomDialogBox(
-                            userEmail: userEmail,
-                            logoutFunciton: _handleLogout,
-                          ));
-                    },
-                    child: CircleAvatar(
-                        radius: 15.0,
-                        backgroundColor: Colors.deepPurple,
-                        child: Icon(
-                          Icons.portrait,
-                          size: 20.0,
-                        )),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ]),
-    );
   }
 }

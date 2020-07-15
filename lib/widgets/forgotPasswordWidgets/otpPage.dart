@@ -25,6 +25,33 @@ class _ResetPageState extends State<OTPPage> {
     _otpCode = TextEditingController();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: _isLoading
+          ? Center(
+              child: SizedBox(
+                height: 200.0,
+                width: 200.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 5.0,
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: EmailOTP(
+                formKey: _formKey,
+                function: _submitOTP,
+                heading: 'Enter OTP code here.',
+                buttonText: 'Submit OTP',
+                textSection: textSection(),
+                context: context,
+              ),
+            ),
+    );
+  }
+
   void _showSnackBar(context, message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -94,33 +121,6 @@ class _ResetPageState extends State<OTPPage> {
           },
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: _isLoading
-          ? Center(
-              child: SizedBox(
-                height: 200.0,
-                width: 200.0,
-                child: CircularProgressIndicator(
-                  strokeWidth: 5.0,
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              child: EmailOTP(
-                formKey: _formKey,
-                function: _submitOTP,
-                heading: 'Enter OTP code here.',
-                buttonText: 'Submit OTP',
-                textSection: textSection(),
-                context: context,
-              ),
-            ),
     );
   }
 }

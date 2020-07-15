@@ -39,6 +39,55 @@ class _SignUpPageState extends State<SignUpPage> {
     _formKey = GlobalKey<FormState>();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: _isLoading
+          ? Center(
+              child: SizedBox(
+                height: 200.0,
+                width: 200.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 5.0,
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: ListView(
+                            children: <Widget>[
+                              _title(),
+                              allTextField(),
+                              SizedBox(
+                                height: 60,
+                              ),
+                              _submitButton(),
+                              _loginAccountLabel()
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(top: 30, child: _backButton()),
+                ],
+              ),
+            )),
+    );
+  }
+
   void _clearValues() {
     _username.text = '';
     _email.text = '';
@@ -262,55 +311,6 @@ class _SignUpPageState extends State<SignUpPage> {
               color: Color(0xfff00BFFF),
               fontSize: 40.0,
               fontWeight: FontWeight.bold)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: _isLoading
-          ? Center(
-              child: SizedBox(
-                height: 200.0,
-                width: 200.0,
-                child: CircularProgressIndicator(
-                  strokeWidth: 5.0,
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: ListView(
-                            children: <Widget>[
-                              _title(),
-                              allTextField(),
-                              SizedBox(
-                                height: 60,
-                              ),
-                              _submitButton(),
-                              _loginAccountLabel()
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(top: 30, child: _backButton()),
-                ],
-              ),
-            )),
     );
   }
 }
