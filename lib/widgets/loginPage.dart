@@ -170,7 +170,8 @@ class _LoginPageState extends State<LoginPage> {
           _showDialog('Incorrect username or password!');
         } else if (result == '3') {
           // show dialog box
-          _showDialog('Activate account first!');
+          _showDialog(
+              'Your account is not activated!\nCheck your email to activate your account.');
         } else {
           // show dialog box
           _showDialog('Internal Server Error!');

@@ -30,7 +30,7 @@ class CustomDialogBox extends StatelessWidget {
               ),
             ),
             Center(
-              child: Text('$userEmail'),
+              child: Text(userEmail),
             )
           ],
         ),
@@ -38,7 +38,7 @@ class CustomDialogBox extends StatelessWidget {
       children: <Widget>[
         Container(
             width: 380.0,
-            height: 330.0,
+            height: 315.0,
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.rectangle,

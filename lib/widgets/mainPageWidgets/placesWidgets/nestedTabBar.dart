@@ -3,8 +3,8 @@ import 'package:photo_view/photo_view.dart';
 import 'modal/places.dart';
 
 class NestedTabBar extends StatefulWidget {
-  final PlacesData value;
-  NestedTabBar({Key key, this.value}) : super(key: key);
+  final PlacesData placeData;
+  NestedTabBar({Key key, this.placeData}) : super(key: key);
   _NestedTabBarState createState() => _NestedTabBarState();
 }
 
@@ -61,7 +61,7 @@ class _NestedTabBarState extends State<NestedTabBar>
           Padding(
             child: Stack(children: <Widget>[
               Image.network(
-                '${widget.value.placesImageURL}',
+                widget.placeData.placesImageURL,
                 fit: BoxFit.cover,
                 height: 250,
               ),
@@ -108,7 +108,7 @@ class _NestedTabBarState extends State<NestedTabBar>
             children: <Widget>[
               Container(
                 child: Text(
-                  widget.value.info,
+                  widget.placeData.info,
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -120,7 +120,7 @@ class _NestedTabBarState extends State<NestedTabBar>
               ),
               Container(
                 child: Text(
-                  widget.value.itinerary,
+                  widget.placeData.itinerary,
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -132,7 +132,7 @@ class _NestedTabBarState extends State<NestedTabBar>
               ),
               new PhotoView(
                   imageProvider: NetworkImage(
-                    widget.value.map,
+                    widget.placeData.map,
                   ),
                   minScale: PhotoViewComputedScale.contained * 0.8,
                   maxScale: 4.0),

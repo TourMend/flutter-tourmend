@@ -42,8 +42,10 @@ class _PlacesPageState extends State<PlacesPage> {
           pageNumber++;
         });
         _fetchPlaces().then((result) {
-          for (var place in result) {
-            placesData.add(place);
+          if (result != null) {
+            for (var place in result) {
+              placesData.add(place);
+            }
           }
         });
       }
@@ -91,43 +93,47 @@ class _PlacesPageState extends State<PlacesPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => NestedTabBar(
-                            value: placesData[index],
+                            placeData: placesData[index],
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      margin: EdgeInsets.all(10.0),
-                      child: Column(children: <Widget>[
-                        Padding(
-                          child: Image.network(
-                            placesData[index].placesImageURL,
-                            fit: BoxFit.cover,
+                    child: Card(
+                      elevation: 10.0,
+                      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(20.0, 25.0, 20.0, 15.0),
+                        child: Column(children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 10.0),
+                            child: Image.network(
+                              placesData[index].placesImageURL,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          padding: EdgeInsets.only(bottom: 2.0),
-                        ),
-                        Row(children: <Widget>[
-                          Padding(
-                              child: Text(
-                                placesData[index].placeName,
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                                textAlign: TextAlign.right,
-                              ),
-                              padding: EdgeInsets.all(1.0)),
-                          Text(" | "),
-                          Padding(
-                              child: Text(
-                                placesData[index].destination,
-                                style:
-                                    new TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.right,
-                              ),
-                              padding: EdgeInsets.all(1.0)),
+                          Row(children: <Widget>[
+                            Padding(
+                                child: Text(
+                                  placesData[index].placeName,
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                  textAlign: TextAlign.right,
+                                ),
+                                padding: EdgeInsets.all(1.0)),
+                            Text(" | "),
+                            Padding(
+                                child: Text(
+                                  placesData[index].destination,
+                                  style: new TextStyle(
+                                      fontStyle: FontStyle.italic),
+                                  textAlign: TextAlign.right,
+                                ),
+                                padding: EdgeInsets.all(1.0)),
+                          ]),
+                          // Divider(color: Colors.black),
                         ]),
-                        Divider(color: Colors.black),
-                      ]),
+                      ),
                     ),
                   );
                 });
