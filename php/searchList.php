@@ -1,19 +1,22 @@
 <?php
 
-if (isset($_GET['page_number'])) {
+if (isset($_GET['page_number'], $_GET['keyword'])) {
+
 
     require_once 'db_config.php';
-
+    $keyword = $_GET['keyword'];
     $page_number = $_GET['page_number'];
     $item_count = 3;
-    // array for the final response
-    $response = array();
 
     $to = ($page_number - 1) * $item_count;
 
-    $sql = "SELECT * FROM tbl_places ORDER BY placename LIMIT $item_count OFFSET $to";
 
+    $sql = "SELECT * FROM tbl_places WHERE placename LIKE '%$keyword%' OR dst LIKE '%$keyword%'    
+ ORDER BY  placename LIMIT $item_count OFFSET $to";
     $result = mysqli_query($db_conn, $sql);
+
+
+
 
     if ($result) {
         if (mysqli_num_rows($result) <= 3 && mysqli_num_rows($result) != 0) {
@@ -38,7 +41,7 @@ if (isset($_GET['page_number'])) {
             echo json_encode($response);
         } else {
             $response['statusCode'] = '2';
-            $response['message'] = 'No more data available!';
+            $response['message'] = 'Not Found!';
 
             echo json_encode($response);
         }

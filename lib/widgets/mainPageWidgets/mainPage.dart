@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/homePageWidgets/homePage.dart';
+import 'package:flutter_app/screens/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'mainPageWidgets/homePageWidgets/homePage.dart';
-import 'mainPageWidgets/placesWidgets/placesPage.dart';
+import '../../screens/homePage.dart';
+import '../../screens/placesPage.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'nestedTabBar.dart';
-import '../../../services/fetchPlaces.dart';
-import 'modal/places.dart';
+import '../widgets/placesWidgets/nestedTabBar.dart';
+import '../services/fetchPlaces.dart';
+import '../modals/places.dart';
 
 class PlacesPage extends StatefulWidget {
   final String title;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widgets/mainPageWidgets/homePageWidgets/customListTile.dart';
+import '../widgets/homePageWidgets/customListTile.dart';
+import 'profilePage.dart';
 
 class CustomDialogBox extends StatelessWidget {
   CustomDialogBox({this.userEmail, this.logoutFunciton});
@@ -48,7 +49,14 @@ class CustomDialogBox extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: <Widget>[
-                  CustomListTile(Icons.person, 'Profile', () => {}),
+                  CustomListTile(
+                      Icons.person,
+                      'Profile',
+                      () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfilePage(),
+                          ))),
                   CustomListTile(Icons.notifications, 'Notification', () => {}),
                   CustomListTile(Icons.settings, 'Setting', () => {}),
                   CustomListTile(
