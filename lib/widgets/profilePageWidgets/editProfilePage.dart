@@ -54,31 +54,32 @@ class EditProfilePageState extends State<EditProfilePage>
                 child: Column(
                   children: <Widget>[
                     Padding(
-                        padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: Colors.black,
-                                    size: 30.0,
-                                  ),
+                      padding: EdgeInsets.only(left: 20.0, top: 20.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                child: Icon(
+                                  Icons.keyboard_arrow_left,
+                                  color: Colors.black,
+                                  size: 30.0,
                                 ),
-                                Text(
-                                  'Back',
-                                  style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w500),
-                                )
-                              ],
-                            ),
+                              ),
+                              Text(
+                                'Back',
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                       child: Stack(fit: StackFit.loose, children: <Widget>[

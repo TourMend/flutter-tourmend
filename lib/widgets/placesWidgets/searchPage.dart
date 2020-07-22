@@ -1,39 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../widgets/placesWidgets/nestedTabBar.dart';
-import '../services/fetchPlaces.dart';
-import '../modals/places.dart';
+import 'nestedTabBar.dart';
+import '../../services/fetchPlaces.dart';
+import '../../modals/places.dart';
 
-import '../widgets/placesWidgets/searchPage.dart';
+class SearchPage extends StatefulWidget {
+  final String tvalue;
 
-class PlacesPage extends StatefulWidget {
-  final String title;
-
-  PlacesPage({Key key, this.title}) : super(key: key);
+  SearchPage({Key key, this.tvalue}) : super(key: key);
   @override
-  _PlacesPageState createState() => _PlacesPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _PlacesPageState extends State<PlacesPage> {
-  TextEditingController _search;
+class _SearchPageState extends State<SearchPage> {
   List<PlacesData> placesData = List();
   ScrollController _scrollController;
   int pageNumber;
-  bool isLoading, canSearch;
+  bool isLoading;
   @override
   void initState() {
+    //   placesData = filtreddata;
     super.initState();
     _scrollController = ScrollController();
-    _search = TextEditingController();
     pageNumber = 1;
     isLoading = true;
-    canSearch = false;
-    _fetchPlaces().then((result) {
-      for (var place in result) {
-        placesData.add(place);
-        setState(() {
-          isLoading = false;
-        });
+
+    search().then((result) {
+      if (result != null) {
+        for (var place in result) {
+          placesData.add(place);
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(children: [
+                Image.network(
+                  'http://10.0.2.2/TourMendWebServices/PlacesImage/noresult.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.contain,
+                ),
+                Text('OPS!\n No result found!. ')
+              ]),
+              actions: <Widget>[
+                FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
     });
 
@@ -44,7 +68,7 @@ class _PlacesPageState extends State<PlacesPage> {
         setState(() {
           pageNumber++;
         });
-        _fetchPlaces().then((result) {
+        search().then((result) {
           if (result != null) {
             for (var place in result) {
               placesData.add(place);
@@ -64,90 +88,15 @@ class _PlacesPageState extends State<PlacesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
+      appBar: new AppBar(
         elevation: 0.0,
-        actions: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 9.0),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[300],
-                    offset: Offset(0.0, 40.0),
-                    blurRadius: 40.0,
-                  )
-                ],
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.blue, width: 0.75),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            canSearch = true;
-                          });
-                        } else {
-                          setState(() {
-                            canSearch = false;
-                          });
-                        }
-                      },
-                      onFieldSubmitted: (value) {
-                        if (value.isEmpty) {
-                          setState(() {
-                            canSearch = false;
-                          });
-                          return;
-                        }
-                        _goToSearch(value);
-                      },
-                      style: TextStyle(height: 1.3),
-                      controller: _search,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.only(left: 20.0, bottom: 11.0),
-                        hintText: "Search here",
-                        hintStyle: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ),
-                  ),
-                  canSearch
-                      ? InkWell(
-                          onTap: () {
-                            _goToSearch(_search.text);
-                          },
-                          child: CircleAvatar(
-                              radius: 17.5,
-                              backgroundColor: Colors.blue,
-                              child: Icon(
-                                Icons.search,
-                                size: 24.0,
-                              )),
-                        )
-                      : Container()
-                ],
-              ),
-            ),
-          ),
-        ],
+        backgroundColor: Colors.white,
+        title: new Text("Search result"),
       ),
       body: Container(
         child: FutureBuilder<List<PlacesData>>(
           initialData: placesData,
-          future: _fetchPlaces(),
+          future: search(),
           builder: (context, snapshot) {
             if (isLoading) {
               return Center(
@@ -233,19 +182,8 @@ class _PlacesPageState extends State<PlacesPage> {
     );
   }
 
-  Future<List<PlacesData>> _fetchPlaces() {
-    return FetchPlaces.fetchPlaces(pageNumber: pageNumber)
+  Future<List<PlacesData>> search() {
+    return FetchPlaces.search(widget.tvalue, pageNumber: pageNumber)
         .then((value) => value.places);
-  }
-
-  void _goToSearch(String value) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchPage(
-          tvalue: value,
-        ),
-      ),
-    );
   }
 }

@@ -23,7 +23,7 @@ class CustomDialogBox extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 15.0),
               child: CircleAvatar(
                 radius: 40.0,
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Colors.blue,
                 child: Icon(
                   Icons.portrait,
                   size: 50.0,

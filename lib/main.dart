@@ -5,7 +5,6 @@ import 'screens/loginPage.dart';
 void main() => runApp(TourMendApp());
 
 class TourMendApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;

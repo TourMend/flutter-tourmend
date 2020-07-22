@@ -69,6 +69,13 @@ class _HomePageState extends State<HomePage> {
           left: 15,
           child: Container(
             decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey[400],
+                    offset: Offset(0.0, 5.0),
+                    blurRadius: 20.0,
+                    spreadRadius: 2.0)
+              ],
               color: Colors.white,
               borderRadius: BorderRadius.circular(15.0),
             ),
@@ -98,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: CircleAvatar(
                         radius: 15.0,
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor: Colors.blue,
                         child: Icon(
                           Icons.portrait,
                           size: 20.0,
