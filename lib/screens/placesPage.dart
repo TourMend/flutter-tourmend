@@ -79,7 +79,7 @@ class _PlacesPageState extends State<PlacesPage> {
                     blurRadius: 40.0,
                   )
                 ],
-                color: Colors.grey[200],
+                color: Colors.white,
                 border: Border.all(color: Colors.blue, width: 0.75),
                 borderRadius: BorderRadius.circular(20.0),
               ),

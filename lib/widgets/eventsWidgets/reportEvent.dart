@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'regularEvents.dart';
+import 'regularEventWidgets/regularEvents.dart';
 import 'liveEvents.dart';
 
 class ReportEventPage extends StatefulWidget {
@@ -49,7 +49,6 @@ class _ReportEventState extends State<ReportEventPage>
   Widget nestedTabBar() {
     double screenHeight = MediaQuery.of(context).size.height;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         TabBar(
           controller: _nestedTabController,

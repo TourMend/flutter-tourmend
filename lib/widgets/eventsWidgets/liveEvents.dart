@@ -100,12 +100,12 @@ class LiveEventsPageState extends State<LiveEventsPage>
         );
         // ignore: unnecessary_statements
       } else if (result == '0') {
-        _clearValues();
+        // _clearValues();
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: new Text('Incorrect  password.\nPlease try again!'),
+              title: new Text('Error!'),
               actions: <Widget>[
                 FlatButton(
                   child: new Text("OK"),
@@ -117,12 +117,12 @@ class LiveEventsPageState extends State<LiveEventsPage>
             );
           },
         );
-      } else {
+      } else if (result == '4') {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: new Text('Error!'),
+              title: new Text('Error in method!'),
               actions: <Widget>[
                 FlatButton(
                   child: new Text("OK"),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../../services/eventService.dart';
+import 'package:intl/intl.dart';
+import 'datePicker.dart';
+import '../../../services/eventService.dart';
 
 class RegularEventsPage extends StatefulWidget {
   final String title;
@@ -17,6 +19,7 @@ class RegularEventsPageState extends State<RegularEventsPage>
       _fromDate,
       _toDate,
       _eventDesc;
+  DateTime _selectedDateFrom, _selectedDateTo;
   @override
   void initState() {
     super.initState();
@@ -25,14 +28,16 @@ class RegularEventsPageState extends State<RegularEventsPage>
     _fromDate = TextEditingController();
     _toDate = TextEditingController();
     _eventDesc = TextEditingController();
+    _selectedDateFrom = DateTime.now();
+    _selectedDateTo = DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        body: new Container(
+    return Scaffold(
+        body: Container(
       color: Colors.white,
-      child: new ListView(
+      child: ListView(
         children: <Widget>[
           Column(
             children: <Widget>[
@@ -53,8 +58,12 @@ class RegularEventsPageState extends State<RegularEventsPage>
   }
 
   void _updateField() async {
-    EventService.regular(_eventName.text, _eventAddress.text, _eventDesc.text,
-            _fromDate.text, _toDate.text)
+    EventService.regular(
+            _eventName.text,
+            _eventAddress.text,
+            _eventDesc.text,
+            DateFormat.yMMMd().format(_selectedDateFrom),
+            DateFormat.yMMMd().format(_selectedDateTo))
         .then((result) {
       print(result);
       if (result == '1') {
@@ -63,11 +72,11 @@ class RegularEventsPageState extends State<RegularEventsPage>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: new Text(
+              title: Text(
                   'Pending Approval!\nYou will notified after being approved.'),
               actions: <Widget>[
                 FlatButton(
-                  child: new Text("OK"),
+                  child: Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -83,10 +92,10 @@ class RegularEventsPageState extends State<RegularEventsPage>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: new Text('Error!'),
+              title: Text('Error!'),
               actions: <Widget>[
                 FlatButton(
-                  child: new Text("OK"),
+                  child: Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -100,10 +109,10 @@ class RegularEventsPageState extends State<RegularEventsPage>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: new Text('This email already has an account!'),
+              title: Text('Error in method!'),
               actions: <Widget>[
                 FlatButton(
-                  child: new Text("OK"),
+                  child: Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -122,20 +131,20 @@ class RegularEventsPageState extends State<RegularEventsPage>
       color: Color(0xffFFFFFF),
       child: Padding(
         padding: EdgeInsets.only(bottom: 25.0),
-        child: new Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                        Text(
                           'Event Name',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -146,21 +155,21 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Flexible(
+                    Flexible(
                       child: TextFormField(
                         controller: _eventName,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.0, horizontal: 5),
                           hintText: 'Event Name',
-                          border: new OutlineInputBorder(
+                          border: OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(5.0),
                             ),
-                            borderSide: new BorderSide(
+                            borderSide: BorderSide(
                               color: Colors.black,
                               width: 1.0,
                             ),
@@ -172,14 +181,14 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                        Text(
                           'Event Address',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -190,21 +199,21 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Flexible(
+                    Flexible(
                       child: TextFormField(
                         controller: _eventAddress,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 5.0, horizontal: 5),
                           hintText: 'Enter Address',
-                          border: new OutlineInputBorder(
+                          border: OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(5.0),
                             ),
-                            borderSide: new BorderSide(
+                            borderSide: BorderSide(
                               color: Colors.black,
                               width: 1.0,
                             ),
@@ -216,14 +225,14 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                        Text(
                           'Locate on Map',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -234,10 +243,10 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Container(
+                    Container(
                       height: 150,
                       width: 325,
                       decoration: BoxDecoration(
@@ -254,14 +263,14 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                        Text(
                           'Event Date',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -271,87 +280,40 @@ class RegularEventsPageState extends State<RegularEventsPage>
                   ],
                 )),
             Padding(
-                padding: EdgeInsets.only(left: 50.0, right: 25.0, top: 2.0),
-                child: new Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    new Text(
-                      'From:',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold),
-                    ),
-                    new Container(
-                      padding: EdgeInsets.only(
-                        left: 15.0,
-                      ),
-                      height: 35,
-                      width: 250,
-                      child: TextFormField(
-                        controller: _fromDate,
-                        decoration: new InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 5.0, horizontal: 5),
-                          hintText: 'DD/MM/YYYY',
-                          border: new OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(5.0),
-                            ),
-                            borderSide: new BorderSide(
-                              color: Colors.black,
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
+              padding: EdgeInsets.only(left: 50.0, right: 25.0, top: 2.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  DatePicker(
+                    labelText: 'From',
+                    selectedDate: _selectedDateFrom,
+                    selectDate: (DateTime value) =>
+                        setState(() => _selectedDateFrom = value),
+                  )
+                ],
+              ),
+            ),
             Padding(
-                padding: EdgeInsets.only(left: 50.0, right: 25.0, top: 9.0),
-                child: new Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    new Text(
-                      'To:',
-                      style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold),
-                    ),
-                    new Container(
-                      padding: EdgeInsets.only(
-                        left: 38.0,
-                      ),
-                      height: 35,
-                      width: 275,
-                      child: TextFormField(
-                        controller: _toDate,
-                        decoration: new InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 5.0, horizontal: 5),
-                          hintText: 'DD/MM/YYYY',
-                          border: new OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(5.0),
-                            ),
-                            borderSide: new BorderSide(
-                              color: Colors.black,
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
+              padding: EdgeInsets.only(left: 50.0, right: 25.0, top: 9.0),
+              child: Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
+                DatePicker(
+                  labelText: 'To',
+                  selectedDate: _selectedDateTo,
+                  selectDate: (value) =>
+                      setState(() => _selectedDateTo = value),
+                )
+              ]),
+            ),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                        Text(
                           'Description',
                           style: TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -362,23 +324,24 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 )),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
-                child: new Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Flexible(
-                        child: new TextFormField(
+                    Flexible(
+                        child: TextFormField(
+                      controller: _eventDesc,
                       textInputAction: TextInputAction.newline,
                       keyboardType: TextInputType.multiline,
                       maxLines: 10,
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 5),
                         hintText: 'Write here',
-                        border: new OutlineInputBorder(
+                        border: OutlineInputBorder(
                           borderRadius: const BorderRadius.all(
                             const Radius.circular(5.0),
                           ),
-                          borderSide: new BorderSide(
+                          borderSide: BorderSide(
                             color: Colors.black,
                             width: 1.0,
                           ),
@@ -397,7 +360,7 @@ class RegularEventsPageState extends State<RegularEventsPage>
   Widget _getActionButtons() {
     return Padding(
       padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: new Row(
+      child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -405,33 +368,33 @@ class RegularEventsPageState extends State<RegularEventsPage>
             child: Padding(
               padding: EdgeInsets.only(right: 10.0),
               child: Container(
-                  child: new RaisedButton(
-                child: new Text("Save"),
+                  child: RaisedButton(
+                child: Text("Save"),
                 textColor: Colors.white,
                 color: Colors.blue,
                 onPressed: () {
                   _updateField();
                 },
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
               )),
             ),
-            flex: 2,
+            flex: 1,
           ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Container(
-                  child: new RaisedButton(
-                child: new Text("Cancel"),
+                  child: RaisedButton(
+                child: Text("Cancel"),
                 textColor: Colors.white,
                 color: Colors.red,
                 onPressed: () {},
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
               )),
             ),
-            flex: 2,
+            flex: 1,
           ),
         ],
       ),

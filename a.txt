@@ -71,47 +71,7 @@ class _MyLoginPageState extends State<_MyLoginPage>
               ],
             ),
 
-            Container(
-              padding: EdgeInsets.only(bottom: 50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      MaterialButton(
-                        color: Colors.white,
-                        minWidth: 100,
-                        elevation: 10,
-                        onPressed: () => {},
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontFamily: 'Google Sans',
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      MaterialButton(
-                        color: Colors.white,
-                        minWidth: 100,
-                        elevation: 10,
-                        onPressed: () => {},
-                        child: Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontFamily: 'Google Sans',
-                            color: Colors.black87,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            
           ],
         ));
   }

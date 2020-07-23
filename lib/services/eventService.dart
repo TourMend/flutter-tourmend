@@ -4,13 +4,13 @@ import 'dart:async';
 
 class EventService {
   static Future<String> live(
-      String address, String description, String eventType) async {
+      String eventAddress, String eventDesc, String eventType) async {
     try {
       const url = "http://10.0.2.2/TourMendWebServices/liveEventForm.php";
       final response = await http.post(url, body: {
-        "eventAddress": address,
-        "eventDesc": description,
-        "eventType": "live",
+        "eventAddress": eventAddress,
+        "eventDesc": eventDesc,
+        "eventType": eventType,
       });
 
       final respJson = jsonDecode(response.body);
@@ -19,10 +19,10 @@ class EventService {
         print(respJson['message']);
         return respJson['statusCode'];
       } else {
-        return 'Logging in failed due to server error!';
+        return 'Error while submitting event!';
       }
     } catch (e) {
-      return ('Error' + e.toString());
+      return ('Error in live(): ' + e.toString());
     }
   }
 
@@ -34,9 +34,8 @@ class EventService {
         "eventName": eventName,
         "eventAddress": eventAddress,
         "eventDesc": eventDesc,
-        "eventType": "regular",
-        "from": from,
-        "to": to,
+        "fromDate": from,
+        "toDate": to,
       });
 
       final respJson = jsonDecode(response.body);
@@ -45,7 +44,7 @@ class EventService {
         print(respJson['message']);
         return respJson['statusCode'];
       } else {
-        return 'Logging in failed due to server error!';
+        return 'Error while submitting event!';
       }
     } catch (e) {
       return ('Error' + e.toString());
