@@ -45,6 +45,8 @@ class RegularEventsPageState extends State<RegularEventsPage>
     _eventName.text = '';
     _eventAddress.text = '';
     _eventDesc.text = '';
+    _selectedDateFrom = DateTime.now();
+    _selectedDateTo = DateTime.now();
   }
 
   void _updateField() async {
@@ -332,7 +334,7 @@ class RegularEventsPageState extends State<RegularEventsPage>
                 color: Colors.blue,
                 onPressed: () {
                   if (_fromKey.currentState.validate()) {
-                    if (_selectedDateFrom.difference(_selectedDateTo).inDays ==
+                    if (_selectedDateTo.difference(_selectedDateFrom).inDays >=
                         0) {
                       _updateField();
                     } else {
