@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'screens/loginPage.dart';
+import 'screens/splashScreen.dart';
 
 void main() => runApp(TourMendApp());
 
@@ -18,7 +18,7 @@ class TourMendApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: SplashScreen(),
     );
   }
 }

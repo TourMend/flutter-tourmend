@@ -1,21 +1,21 @@
 <?php
-if (isset($_POST['eventAddress'], $_POST['eventDesc'], $_POST['eventType'], $_POST['eventName'], $_POST['from'], $_POST['to'])) {
+if (isset($_POST['eventName'], $_POST['eventAddress'], $_POST['eventDesc'], $_POST['fromDate'], $_POST['toDate'])) {
     require_once 'db_config.php';
 
+
+    $fromDate = $_POST['fromDate'];
+    $toDate = $_POST['toDate'];
     $eventName = $_POST['eventName'];
     $eventAddress = $_POST['eventAddress'];
     $eventDesc = $_POST['eventDesc'];
-    $eventType = $_POST['eventType'];
-    $fromDate = $_POST['from'];
-    $toDate = $_POST['to'];
     $approval = "pending";
+    $eventType = "regular";
 
-    $sql = "INSERT INTO tbl_events (eventName, eventAddress, eventType, description, fromDate, toDate, approval) VALUES ('$eventName','$eventAddress','$eventType','$eventDesc','$fromDate','$toDate','$approval')";
+    $sql = "INSERT INTO tbl_events (eventType, eventName, eventAddress, fromDate, toDate, eventDesc, approval) VALUES ('$eventType', '$eventName', '$eventAddress', '$fromDate', '$toDate', '$eventDesc', '$approval')";
 
+    $executeQuery = mysqli_query($db_conn, $sql);
 
-    $executeQurey = mysqli_query($db_conn, $sql);
-
-    if ($executeQurey) {
+    if ($executeQuery) {
         echo (json_encode(array('statusCode' => '1', 'message' => 'Event submitted!')));
     } else {
         echo (json_encode(array('statusCode' => '0', 'message' => 'Error while submitting event!')));

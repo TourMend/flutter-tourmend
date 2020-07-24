@@ -1,18 +1,17 @@
 <?php
-
 if (isset($_POST['eventAddress'], $_POST['eventDesc'], $_POST['eventType'])) {
     require_once 'db_config.php';
 
+    $eventType = $_POST['eventType'];
     $eventAddress = $_POST['eventAddress'];
     $eventDesc = $_POST['eventDesc'];
-    $eventType = $_POST['eventType'];
+    $approval = "pending";
 
-    $sql = "INSERT INTO tbl_events (eventaddress, eventType, description) VALUES ('$eventAddress','$eventType','$eventDesc')";
+    $sql = "INSERT INTO tbl_events (eventType, eventAddress, eventDesc, approval) VALUES ('$eventType', '$eventAddress', '$eventDesc', '$approval')";
 
+    $executeQuery = mysqli_query($db_conn, $sql);
 
-    $executeQurey = mysqli_query($db_conn, $sql);
-
-    if ($executeQurey) {
+    if ($executeQuery) {
         echo (json_encode(array('statusCode' => '1', 'message' => 'Event submitted!')));
     } else {
         echo (json_encode(array('statusCode' => '0', 'message' => 'Error while submitting event!')));

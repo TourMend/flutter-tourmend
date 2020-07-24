@@ -61,9 +61,9 @@ class LiveEventsPageState extends State<LiveEventsPage>
     return items;
   }
 
-  onChangeDropdownItem(Events selectedCompany) {
+  onChangeDropdownItem(Events selectedEvent) {
     setState(() {
-      _selectedEvent = selectedCompany;
+      _selectedEvent = selectedEvent;
     });
   }
 

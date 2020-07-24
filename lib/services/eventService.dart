@@ -47,7 +47,7 @@ class EventService {
         return 'Error while submitting event!';
       }
     } catch (e) {
-      return ('Error' + e.toString());
+      return ('Error in regular(): ' + e.toString());
     }
   }
 }

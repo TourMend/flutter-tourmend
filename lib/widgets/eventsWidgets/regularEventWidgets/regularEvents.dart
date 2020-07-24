@@ -14,19 +14,14 @@ class RegularEventsPage extends StatefulWidget {
 
 class RegularEventsPageState extends State<RegularEventsPage>
     with SingleTickerProviderStateMixin {
-  TextEditingController _eventAddress,
-      _eventName,
-      _fromDate,
-      _toDate,
-      _eventDesc;
+  TextEditingController _eventAddress, _eventName, _eventDesc;
   DateTime _selectedDateFrom, _selectedDateTo;
   @override
   void initState() {
     super.initState();
     _eventName = TextEditingController();
     _eventAddress = TextEditingController();
-    _fromDate = TextEditingController();
-    _toDate = TextEditingController();
+
     _eventDesc = TextEditingController();
     _selectedDateFrom = DateTime.now();
     _selectedDateTo = DateTime.now();
@@ -53,8 +48,6 @@ class RegularEventsPageState extends State<RegularEventsPage>
     _eventName.text = '';
     _eventAddress.text = '';
     _eventDesc.text = '';
-    _toDate.text = '';
-    _fromDate.text = '';
   }
 
   void _updateField() async {
