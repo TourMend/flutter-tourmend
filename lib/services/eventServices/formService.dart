@@ -2,8 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-class EventService {
-  static Future<String> live(
+class FormService {
+  static Future<String> liveEvent(
       String eventAddress, String eventDesc, String eventType) async {
     try {
       const url = "http://10.0.2.2/TourMendWebServices/liveEventForm.php";
@@ -26,7 +26,7 @@ class EventService {
     }
   }
 
-  static Future<String> regular(String eventName, String eventAddress,
+  static Future<String> regularEvent(String eventName, String eventAddress,
       String eventDesc, String from, String to) async {
     try {
       const url = "http://10.0.2.2/TourMendWebServices/regularEventForm.php";

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'nestedTabBar.dart';
 import '../../services/fetchPlaces.dart';
-import '../../modals/places.dart';
+import '../../modals/placesModal/places.dart';
 
 class SearchPage extends StatefulWidget {
   final String tvalue;

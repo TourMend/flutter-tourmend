@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../widgets/placesWidgets/nestedTabBar.dart';
+import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
+import 'package:flutter_app/widgets/placesWidgets/placeCard.dart';
+
+import 'package:flutter_app/widgets/placesWidgets/nestedTabBar.dart';
 import '../services/fetchPlaces.dart';
-import '../modals/places.dart';
+import '../modals/placesModal/places.dart';
 
 import '../widgets/placesWidgets/searchPage.dart';
 
@@ -18,14 +21,14 @@ class _PlacesPageState extends State<PlacesPage> {
   TextEditingController _search;
   List<PlacesData> placesData = List();
   ScrollController _scrollController;
-  int pageNumber;
+  int _pageNumber;
   bool isLoading, canSearch;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _search = TextEditingController();
-    pageNumber = 1;
+    _pageNumber = 1;
     isLoading = true;
     canSearch = false;
     _fetchPlaces().then((result) {
@@ -42,7 +45,7 @@ class _PlacesPageState extends State<PlacesPage> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
-          pageNumber++;
+          _pageNumber++;
         });
         _fetchPlaces().then((result) {
           if (result != null) {
@@ -155,77 +158,17 @@ class _PlacesPageState extends State<PlacesPage> {
               );
             }
 
-            return ListView.builder(
-              itemCount: placesData.length,
-              controller: _scrollController,
-              physics: AlwaysScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                if (snapshot.data != null) {
-                  if (snapshot.data.length + 1 == index) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NestedTabBar(
-                          placeData: placesData[index],
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-                    child: Card(
-                      elevation: 10.0,
-                      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      child: Column(children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 10.0),
-                          child: Image.network(
-                            placesData[index].placesImageURL,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 15.0,
-                                bottom: 10.0,
-                              ),
-                              child: Text(
-                                placesData[index].placeName,
-                                style: new TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 5.0, bottom: 10.0),
-                              child: Text(" | "),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 5.0, bottom: 10.0),
-                              child: Text(
-                                placesData[index].destination,
-                                style:
-                                    new TextStyle(fontStyle: FontStyle.italic),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ]),
-                    ),
-                  ),
-                );
-              },
+            return JsonListView(
+              snapshot: snapshot,
+              listData: placesData,
+              scrollController: _scrollController,
+              onTapWidget: (value) => NestedTabBar(
+                placeData: placesData[value],
+              ),
+              childWidget: (value) => PlaceCard(
+                placesData: placesData,
+                index: value,
+              ),
             );
           },
         ),
@@ -234,7 +177,7 @@ class _PlacesPageState extends State<PlacesPage> {
   }
 
   Future<List<PlacesData>> _fetchPlaces() {
-    return FetchPlaces.fetchPlaces(pageNumber: pageNumber)
+    return FetchPlaces.fetchPlaces(pageNumber: _pageNumber)
         .then((value) => value.places);
   }
 

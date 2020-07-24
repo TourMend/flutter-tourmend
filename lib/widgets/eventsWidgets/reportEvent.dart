@@ -27,10 +27,9 @@ class _ReportEventState extends State<ReportEventPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           centerTitle: true,
           title: Text(
-            'Report Events Happening',
+            'Report Events',
             style: TextStyle(
               decoration: TextDecoration.none,
               color: Colors.black,
@@ -39,9 +38,7 @@ class _ReportEventState extends State<ReportEventPage>
         ),
         body: SingleChildScrollView(
           child: Center(
-            child: Column(children: <Widget>[
-              nestedTabBar(),
-            ]),
+            child: nestedTabBar(),
           ),
         ));
   }
@@ -66,7 +63,7 @@ class _ReportEventState extends State<ReportEventPage>
           ],
         ),
         Container(
-          height: screenHeight * 0.70,
+          height: screenHeight * 0.825,
           margin: EdgeInsets.only(left: 16.0, right: 16.0),
           child: TabBarView(
             controller: _nestedTabController,

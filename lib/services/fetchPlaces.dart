@@ -1,6 +1,6 @@
 import 'dart:convert';
-import '../modals/placesList.dart';
-import '../modals/places.dart';
+import '../modals/placesModal/placesList.dart';
+import '../modals/placesModal/places.dart';
 import 'package:http/http.dart' as http;
 
 class FetchPlaces {

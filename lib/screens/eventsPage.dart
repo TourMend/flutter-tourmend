@@ -1,16 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/modals/eventsModal/events.dart';
+import 'package:flutter_app/services/eventServices/fetchEvents.dart';
+import 'package:flutter_app/widgets/eventsWidgets/eventCard.dart';
+import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
 import '../widgets/eventsWidgets/reportEvent.dart';
 
-/// This Widget is the main application widget.
-class EventPage extends StatelessWidget {
+class EventsPage extends StatefulWidget {
+  final String title;
+
+  EventsPage({Key key, this.title}) : super(key: key);
+  @override
+  _EventPageState createState() => _EventPageState();
+}
+
+class _EventPageState extends State<EventsPage> {
+  List<EventsData> eventsData = List();
+  ScrollController _scrollController;
+  int pageNumber;
+  bool isLoading;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    pageNumber = 1;
+    isLoading = true;
+
+    _fetchEvents().then((result) {
+      for (var event in result) {
+        eventsData.add(event);
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+
+    _scrollController.addListener(() {
+      // print(_scrollController.position.extentAfter);
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          pageNumber++;
+        });
+        _fetchEvents().then((result) {
+          if (result != null) {
+            for (var event in result) {
+              eventsData.add(event);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: Icon(
-            Icons.event_available,
-            size: 35,
-            color: Colors.white,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Icon(
+              Icons.event_available,
+              size: 30,
+              color: Colors.black,
+            ),
           ),
           title: Text(
             'All Events ',
@@ -19,123 +78,28 @@ class EventPage extends StatelessWidget {
               color: Colors.black,
             ),
           )),
-      body: ListView.builder(
-        //itemCount: titles.length,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 10.0,
-            margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: Container(
-              padding: EdgeInsets.fromLTRB(4.0, 10.0, 4.0, 4.0),
-              child: Column(children: <Widget>[
-                Row(children: <Widget>[
-                  Padding(
-                      child: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        radius: 18.0,
-                        child: Icon(
-                          Icons.people,
-                          size: 20.0,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Padding(
-                      child: Text(
-                        "Username ",
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Padding(
-                      child: Icon(
-                        Icons.chevron_right,
-                        size: 20.0,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Padding(
-                      child: Text(
-                        "Event Type ",
-                        style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
-                        "Event name",
-                        style: new TextStyle(fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                ]),
-                Row(children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 59.0, right: 37, top: 0),
-                    child: Text(
-                      "From ",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                  ),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
-                        "Address",
-                        style: new TextStyle(fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                ]),
+      body: Container(
+        child: FutureBuilder<List<EventsData>>(
+          initialData: eventsData,
+          future: _fetchEvents(),
+          builder: (context, snapshot) {
+            if (isLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-                Row(children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 55.0,
-                      top: 3,
-                    ),
-                    child: Text(
-                      "Event Date ",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15),
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
-                        "DD/MM/YY",
-                        style: new TextStyle(fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                ]),
-
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
-                  child: Image.network(
-                    'http://10.0.2.2/TourMendWebServices/PlacesImage/eventsbanner.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Row(children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 5.0, top: 3),
-                    child: Text(
-                      "Description : ",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 13),
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                ]),
-
-                // Divider(color: Colors.black),
-              ]),
-            ),
-          );
-        },
+            return JsonListView(
+              snapshot: snapshot,
+              listData: eventsData,
+              scrollController: _scrollController,
+              childWidget: (value) => EventCard(
+                eventsData: eventsData,
+                index: value,
+              ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -145,10 +109,21 @@ class EventPage extends StatelessWidget {
                 builder: (context) => ReportEventPage(),
               ));
         },
-        label: Text('Add'),
-        icon: Icon(Icons.add),
+        label: Text(
+          'Add Event',
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.blue,
       ),
     );
+  }
+
+  Future<List<EventsData>> _fetchEvents() {
+    return FetchEvents.fetchEvents(pageNumber: pageNumber)
+        .then((value) => value.events);
   }
 }
