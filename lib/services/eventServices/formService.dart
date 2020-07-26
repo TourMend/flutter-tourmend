@@ -4,7 +4,7 @@ import 'dart:async';
 
 class FormService {
   static Future<String> liveEvent(String userEmail, String eventAddress,
-      String eventDesc, String eventType) async {
+      String eventDesc, String eventType, String eventName) async {
     try {
       const url = "http://10.0.2.2/TourMendWebServices/liveEventForm.php";
       final response = await http.post(url, body: {
@@ -12,6 +12,7 @@ class FormService {
         "eventAddress": eventAddress,
         "eventDesc": eventDesc,
         "eventType": eventType,
+        "eventName": eventName,
       });
 
       final respJson = jsonDecode(response.body);

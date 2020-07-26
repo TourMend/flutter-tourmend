@@ -107,34 +107,34 @@ class RegularEventsPageState extends State<RegularEventsPage>
                       ],
                     )),
                 Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Flexible(
-                          child: TextFormField(
-                            controller: _eventName,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 10.0),
-                              hintText: 'Event Name',
-                              border: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(5.0),
-                                ),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 1.0,
-                                ),
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          controller: _eventName,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 5.0, horizontal: 10.0),
+                            hintText: 'Event Name',
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(5.0),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.black,
+                                width: 1.0,
                               ),
                             ),
-                            validator: (value) => value.isEmpty
-                                ? 'Event Name is required!'
-                                : null,
                           ),
+                          validator: (value) =>
+                              value.isEmpty ? 'Event Name is required!' : null,
                         ),
-                      ],
-                    )),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                     padding:
                         EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
@@ -216,9 +216,10 @@ class RegularEventsPageState extends State<RegularEventsPage>
                               width: 1,
                             ),
                           ),
-                          child: Center(
-                              child: Text("Map Comming Soon....",
-                                  style: TextStyle(fontSize: 20))),
+                          child: Image.asset(
+                            'assets/places/coming.jpg',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ],
                     )),

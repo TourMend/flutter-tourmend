@@ -25,6 +25,7 @@ class Events {
       Events(3, 'Flood'),
       Events(4, 'Traffic Jam'),
       Events(5, 'VIP escorting'),
+      Events(6, 'Other')
     ];
   }
 }
@@ -33,6 +34,7 @@ class LiveEventsPageState extends State<LiveEventsPage>
     with SingleTickerProviderStateMixin {
   TextEditingController _address;
   TextEditingController _description;
+  TextEditingController _eventName;
   SharedPreferences _preferences;
   GlobalKey<FormState> _formKey;
   List<Events> _events = Events.getEvents();
@@ -43,20 +45,22 @@ class LiveEventsPageState extends State<LiveEventsPage>
   void initState() {
     _address = TextEditingController();
     _description = TextEditingController();
-
+    _eventName = TextEditingController();
     _formKey = GlobalKey<FormState>();
-    _dropdownMenuItems = buildDropdownMenuItems(_events);
+    _dropdownMenuItems = buildDropdownMenuItems();
     _selectedEvent = _dropdownMenuItems[0].value;
     super.initState();
   }
 
-  List<DropdownMenuItem<Events>> buildDropdownMenuItems(List companies) {
+  List<DropdownMenuItem<Events>> buildDropdownMenuItems() {
     List<DropdownMenuItem<Events>> items = List();
     for (Events event in _events) {
       items.add(
         DropdownMenuItem(
           value: event,
-          child: Text(event.name),
+          child: Text(
+            event.name,
+          ),
         ),
       );
     }
@@ -76,11 +80,13 @@ class LiveEventsPageState extends State<LiveEventsPage>
 
   void _updatefield() async {
     _preferences = await SharedPreferences.getInstance();
+    if (_selectedEvent.name != 'Other') _eventName.text = 'none';
     FormService.liveEvent(
       _preferences.getString('user_email'),
       _address.text,
       _description.text,
       _selectedEvent.name,
+      _eventName.text,
     ).then((result) {
       print(result);
       if (result == '1') {
@@ -161,7 +167,8 @@ class LiveEventsPageState extends State<LiveEventsPage>
                               child: DropdownButton(
                                 value: _selectedEvent,
                                 items: _dropdownMenuItems,
-                                onChanged: onChangeDropdownItem,
+                                onChanged: (value) =>
+                                    onChangeDropdownItem(value),
                               ),
                             ),
                           ],
@@ -170,6 +177,64 @@ class LiveEventsPageState extends State<LiveEventsPage>
                     ),
                   ],
                 )),
+            _selectedEvent.name == 'Other'
+                ? Column(
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  'Event Name *',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.only(left: 25.0, right: 25.0, top: 9.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Flexible(
+                              child: TextFormField(
+                                controller: _eventName,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 5.0, horizontal: 10.0),
+                                  hintText: 'Event Name',
+                                  border: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(5.0),
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: Colors.black,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) => value.isEmpty
+                                    ? 'Event Name is required!'
+                                    : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
             Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
                 child: Row(
@@ -248,8 +313,8 @@ class LiveEventsPageState extends State<LiveEventsPage>
                           width: 1,
                         ),
                       ),
-                      child: Image.network(
-                        'http://10.0.2.2/TourMendWebServices/PlacesImage/coming.jpg',
+                      child: Image.asset(
+                        'assets/places/coming.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),

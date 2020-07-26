@@ -47,9 +47,9 @@ class EventCard extends StatelessWidget {
                     size: 20.0,
                   ),
                 ),
-                eventsData[index].eventType == 'regular'
-                    ? Container()
-                    : Padding(
+                eventsData[index].eventType != 'Other' &&
+                        eventsData[index].eventName == 'none'
+                    ? Padding(
                         padding: EdgeInsets.only(left: 5.0),
                         child: Text(
                           eventsData[index].eventType,
@@ -57,22 +57,16 @@ class EventCard extends StatelessWidget {
                               fontWeight: FontWeight.bold, fontSize: 17),
                           textAlign: TextAlign.right,
                         ),
-                      ),
-                eventsData[index].eventName != 'none' &&
-                        eventsData[index].eventType == 'live'
-                    ? Text(" | ")
-                    : Container(),
-                eventsData[index].eventName != 'none'
-                    ? Padding(
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(left: 5.0),
                         child: Text(
                           eventsData[index].eventName,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 17),
                           textAlign: TextAlign.right,
                         ),
-                        padding: EdgeInsets.all(1.0),
-                      )
-                    : Container(),
+                      ),
               ],
             ),
             Row(children: <Widget>[
