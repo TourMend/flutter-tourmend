@@ -1,13 +1,23 @@
 <?php
-if (isset($_POST['eventAddress'], $_POST['eventDesc'], $_POST['eventType'])) {
+if (isset($_POST['userEmail'], $_POST['eventAddress'], $_POST['eventDesc'], $_POST['eventType'])) {
     require_once 'db_config.php';
 
+    $userEmail = $_POST['userEmail'];
     $eventType = $_POST['eventType'];
     $eventAddress = $_POST['eventAddress'];
     $eventDesc = $_POST['eventDesc'];
     $approval = "pending";
 
-    $sql = "INSERT INTO tbl_events (eventType, eventAddress, eventDesc, approval) VALUES ('$eventType', '$eventAddress', '$eventDesc', '$approval')";
+    $getUserId = "SELECT id FROM user_info WHERE email='$userEmail'";
+    $executeQuery = mysqli_query($db_conn, $getUserId);
+
+    if ($executeQuery) {
+        $userInfo = mysqli_fetch_assoc($executeQuery);
+        $userId = $userInfo['id'];
+    }
+    // else statement
+
+    $sql = "INSERT INTO tbl_events (user_id, type, address, description, approval) VALUES ('$userId', '$eventType', '$eventAddress', '$eventDesc', '$approval')";
 
     $executeQuery = mysqli_query($db_conn, $sql);
 
