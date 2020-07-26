@@ -60,8 +60,8 @@ class _NestedTabBarState extends State<NestedTabBar>
         child: Column(children: <Widget>[
           Padding(
             child: Stack(children: <Widget>[
-              Image.network(
-                widget.placeData.placesImageURL,
+              Image.asset(
+                'assets/places/${widget.placeData.placeImage}',
                 fit: BoxFit.cover,
                 height: 250,
               ),
@@ -131,9 +131,8 @@ class _NestedTabBarState extends State<NestedTabBar>
                 ),
               ),
               new PhotoView(
-                  imageProvider: NetworkImage(
-                    widget.placeData.map,
-                  ),
+                  imageProvider:
+                      AssetImage('assets/maps/${widget.placeData.map}'),
                   minScale: PhotoViewComputedScale.contained * 0.8,
                   maxScale: 4.0),
             ],

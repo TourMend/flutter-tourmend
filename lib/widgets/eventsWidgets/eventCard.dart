@@ -13,7 +13,7 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+      padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 5.0),
       child: Card(
         elevation: 10.0,
         margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -35,7 +35,7 @@ class EventCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 10.0),
                   child: Text(
-                    "Username ",
+                    eventsData[index].userName,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     textAlign: TextAlign.right,
                   ),
@@ -79,7 +79,7 @@ class EventCard extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 59.0, right: 5.0),
                 child: Text(
-                  "From : ",
+                  "Location : ",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
               ),
@@ -130,8 +130,8 @@ class EventCard extends StatelessWidget {
             ]),
             Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Image.network(
-                'http://10.0.2.2/TourMendWebServices/PlacesImage/eventsbanner.jpg',
+              child: Image.asset(
+                'assets/places/eventsbanner.jpg',
                 fit: BoxFit.cover,
               ),
             ),

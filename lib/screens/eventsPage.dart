@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/modals/eventsModal/events.dart';
 import 'package:flutter_app/services/eventServices/fetchEvents.dart';
 import 'package:flutter_app/widgets/eventsWidgets/eventCard.dart';
@@ -16,21 +17,22 @@ class EventsPage extends StatefulWidget {
 class _EventPageState extends State<EventsPage> {
   List<EventsData> eventsData = List();
   ScrollController _scrollController;
-  int pageNumber;
-  bool isLoading;
+  int _pageNumber;
+  bool _isLoading, _showButton;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    pageNumber = 1;
-    isLoading = true;
+    _pageNumber = 1;
+    _isLoading = true;
+    _showButton = true;
 
     _fetchEvents().then((result) {
       for (var event in result) {
         eventsData.add(event);
         setState(() {
-          isLoading = false;
+          _isLoading = false;
         });
       }
     });
@@ -40,7 +42,7 @@ class _EventPageState extends State<EventsPage> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
-          pageNumber++;
+          _pageNumber++;
         });
         _fetchEvents().then((result) {
           if (result != null) {
@@ -51,6 +53,8 @@ class _EventPageState extends State<EventsPage> {
         });
       }
     });
+
+    _handleScroll();
   }
 
   @override
@@ -68,14 +72,14 @@ class _EventPageState extends State<EventsPage> {
             child: Icon(
               Icons.event_available,
               size: 30,
-              color: Colors.black,
+              color: Colors.black87,
             ),
           ),
           title: Text(
             'All Events ',
             style: TextStyle(
               decoration: TextDecoration.none,
-              color: Colors.black,
+              color: Colors.black87,
             ),
           )),
       body: Container(
@@ -83,47 +87,70 @@ class _EventPageState extends State<EventsPage> {
           initialData: eventsData,
           future: _fetchEvents(),
           builder: (context, snapshot) {
-            if (isLoading) {
+            if (_isLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
 
-            return JsonListView(
-              snapshot: snapshot,
-              listData: eventsData,
-              scrollController: _scrollController,
-              childWidget: (value) => EventCard(
-                eventsData: eventsData,
-                index: value,
+            return RefreshIndicator(
+              onRefresh: () => _fetchEvents().then((value) => null),
+              child: JsonListView(
+                snapshot: snapshot,
+                listData: eventsData,
+                scrollController: _scrollController,
+                childWidget: (value) => EventCard(
+                  eventsData: eventsData,
+                  index: value,
+                ),
               ),
             );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReportEventPage(),
-              ));
-        },
-        label: Text(
-          'Add Event',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+      floatingActionButton: Visibility(
+        visible: _showButton,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReportEventPage(),
+                ));
+          },
+          label: Text(
+            'Add Event',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.blue,
         ),
-        icon: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.blue,
       ),
     );
   }
 
   Future<List<EventsData>> _fetchEvents() {
-    return FetchEvents.fetchEvents(pageNumber: pageNumber)
+    return FetchEvents.fetchEvents(pageNumber: _pageNumber)
         .then((value) => value.events);
+  }
+
+  void _handleScroll() async {
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        setState(() {
+          _showButton = false;
+        });
+      }
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        setState(() {
+          _showButton = true;
+        });
+      }
+    });
   }
 }

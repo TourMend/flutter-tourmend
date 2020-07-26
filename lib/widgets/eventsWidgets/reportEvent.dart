@@ -27,12 +27,11 @@ class _ReportEventState extends State<ReportEventPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           title: Text(
             'Report Events',
             style: TextStyle(
               decoration: TextDecoration.none,
-              color: Colors.black,
+              color: Colors.black87,
             ),
           ),
         ),

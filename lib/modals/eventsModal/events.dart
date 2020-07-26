@@ -1,5 +1,6 @@
 class EventsData {
   String id;
+  String userName;
   String eventType;
   String eventName;
   String eventAddress;
@@ -10,6 +11,7 @@ class EventsData {
 
   EventsData(
       {this.id,
+      this.userName,
       this.eventType,
       this.eventName,
       this.eventAddress,
@@ -21,6 +23,7 @@ class EventsData {
   factory EventsData.fromJson(Map<String, dynamic> json) {
     return EventsData(
       id: json['id'],
+      userName: json['userName'],
       eventType: json['eventType'],
       eventName: json['eventName'],
       eventAddress: json['eventAddress'],

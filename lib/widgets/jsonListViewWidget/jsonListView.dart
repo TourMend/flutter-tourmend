@@ -22,7 +22,7 @@ class JsonListView extends StatelessWidget {
       physics: AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         if (snapshot.data != null) {
-          if (snapshot.data.length + 1 == index) {
+          if (snapshot.data.length + 1 == index + 1) {
             return Center(
               child: CircularProgressIndicator(),
             );

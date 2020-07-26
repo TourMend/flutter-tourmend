@@ -19,6 +19,7 @@ class FetchEvents {
           for (var event in respJson['events']) {
             var eventData = EventsData(
               id: event['id'],
+              userName: event['userName'],
               eventType: event['eventType'],
               eventName: event['eventName'],
               eventAddress: event['eventAddress'],

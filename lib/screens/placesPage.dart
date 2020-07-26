@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
-import 'package:flutter_app/widgets/placesWidgets/placeCard.dart';
-
-import 'package:flutter_app/widgets/placesWidgets/nestedTabBar.dart';
+import 'package:flutter_app/widgets/placesPageWidgets/placeCard.dart';
+import 'package:flutter_app/widgets/placesPageWidgets/nestedTabBar.dart';
+import 'package:flutter_app/widgets/placesPageWidgets/searchBar.dart';
 import '../services/fetchPlaces.dart';
 import '../modals/placesModal/places.dart';
-
-import '../widgets/placesWidgets/searchPage.dart';
+import '../widgets/placesPageWidgets/searchPage.dart';
 
 class PlacesPage extends StatefulWidget {
   final String title;
@@ -19,23 +19,26 @@ class PlacesPage extends StatefulWidget {
 
 class _PlacesPageState extends State<PlacesPage> {
   TextEditingController _search;
-  List<PlacesData> placesData = List();
+  List<PlacesData> _placesData;
   ScrollController _scrollController;
   int _pageNumber;
-  bool isLoading, canSearch;
+  bool _isLoading, _canSearch, _showSearchBar;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _search = TextEditingController();
     _pageNumber = 1;
-    isLoading = true;
-    canSearch = false;
+    _isLoading = true;
+    _canSearch = false;
+    _showSearchBar = true;
+    _placesData = List();
+
     _fetchPlaces().then((result) {
       for (var place in result) {
-        placesData.add(place);
+        _placesData.add(place);
         setState(() {
-          isLoading = false;
+          _isLoading = false;
         });
       }
     });
@@ -50,12 +53,14 @@ class _PlacesPageState extends State<PlacesPage> {
         _fetchPlaces().then((result) {
           if (result != null) {
             for (var place in result) {
-              placesData.add(place);
+              _placesData.add(place);
             }
           }
         });
       }
     });
+
+    _handleScroll();
   }
 
   @override
@@ -67,111 +72,68 @@ class _PlacesPageState extends State<PlacesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        actions: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 9.0),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[300],
-                    offset: Offset(0.0, 40.0),
-                    blurRadius: 40.0,
-                  )
-                ],
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 0.75),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            canSearch = true;
-                          });
-                        } else {
-                          setState(() {
-                            canSearch = false;
-                          });
-                        }
-                      },
-                      onFieldSubmitted: (value) {
-                        if (value.isEmpty) {
-                          setState(() {
-                            canSearch = false;
-                          });
-                          return;
-                        }
-                        _goToSearch(value);
-                      },
-                      style: TextStyle(height: 1.3),
-                      controller: _search,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.only(left: 20.0, bottom: 11.0),
-                        hintText: "Search here",
-                        hintStyle: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            padding: _showSearchBar
+                ? EdgeInsets.only(top: 55.0)
+                : EdgeInsets.only(top: 0.0),
+            child: FutureBuilder<List<PlacesData>>(
+              initialData: _placesData,
+              future: _fetchPlaces(),
+              builder: (context, snapshot) {
+                if (_isLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return JsonListView(
+                  snapshot: snapshot,
+                  listData: _placesData,
+                  scrollController: _scrollController,
+                  onTapWidget: (value) => NestedTabBar(
+                    placeData: _placesData[value],
                   ),
-                  canSearch
-                      ? InkWell(
-                          onTap: () {
-                            _goToSearch(_search.text);
-                          },
-                          child: CircleAvatar(
-                              radius: 17.5,
-                              backgroundColor: Colors.blue,
-                              child: Icon(
-                                Icons.search,
-                                size: 24.0,
-                              )),
-                        )
-                      : Container()
-                ],
-              ),
+                  childWidget: (value) => PlaceCard(
+                    placesData: _placesData,
+                    index: value,
+                  ),
+                );
+              },
             ),
           ),
+          Visibility(
+            visible: _showSearchBar,
+            child: SearchBar(
+              canSearch: _canSearch,
+              searchController: _search,
+              onValueChanged: (value) {
+                if (value.isNotEmpty) {
+                  setState(() {
+                    _canSearch = true;
+                  });
+                } else {
+                  setState(() {
+                    _canSearch = false;
+                  });
+                }
+              },
+              onSubmit: (value) {
+                if (value.isEmpty) {
+                  setState(() {
+                    _canSearch = false;
+                  });
+                  return;
+                }
+                _goToSearch(value);
+              },
+              onTap: () {
+                _goToSearch(_search.text);
+              },
+            ),
+          )
         ],
-      ),
-      body: Container(
-        child: FutureBuilder<List<PlacesData>>(
-          initialData: placesData,
-          future: _fetchPlaces(),
-          builder: (context, snapshot) {
-            if (isLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return JsonListView(
-              snapshot: snapshot,
-              listData: placesData,
-              scrollController: _scrollController,
-              onTapWidget: (value) => NestedTabBar(
-                placeData: placesData[value],
-              ),
-              childWidget: (value) => PlaceCard(
-                placesData: placesData,
-                index: value,
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -186,9 +148,27 @@ class _PlacesPageState extends State<PlacesPage> {
       context,
       MaterialPageRoute(
         builder: (context) => SearchPage(
-          tvalue: value,
+          searchString: value,
         ),
       ),
     );
+  }
+
+  void _handleScroll() async {
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          _scrollController.position.pixels >= 36) {
+        setState(() {
+          _showSearchBar = false;
+        });
+      }
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        setState(() {
+          _showSearchBar = true;
+        });
+      }
+    });
   }
 }

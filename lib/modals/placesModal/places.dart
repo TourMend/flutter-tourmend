@@ -2,7 +2,7 @@ class PlacesData {
   String id;
   String placeName;
   String destination;
-  String placesImageURL;
+  String placeImage;
   String info;
   String itinerary;
   String map;
@@ -11,7 +11,7 @@ class PlacesData {
       {this.id,
       this.placeName,
       this.destination,
-      this.placesImageURL,
+      this.placeImage,
       this.info,
       this.itinerary,
       this.map});
@@ -21,7 +21,7 @@ class PlacesData {
       id: json['id'],
       placeName: json['placeName'],
       destination: json['destination'],
-      placesImageURL: json['imgURL'],
+      placeImage: json['img'],
       info: json['info'],
       itinerary: json['itinerary'],
       map: json['map'],

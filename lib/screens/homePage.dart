@@ -85,11 +85,16 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     cursorColor: Colors.black,
                     keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.go,
+                    textInputAction: TextInputAction.search,
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                        hintText: "Search here"),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                      hintText: "Search here",
+                      hintStyle: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.grey[500],
+                      ),
+                    ),
                   ),
                 ),
                 Padding(

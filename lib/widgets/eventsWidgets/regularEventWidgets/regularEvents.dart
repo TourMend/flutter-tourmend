@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/widgets/eventsWidgets/actionButtions.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'datePicker.dart';
 import '../../../services/eventServices/formService.dart';
 
@@ -15,6 +17,7 @@ class RegularEventsPage extends StatefulWidget {
 class RegularEventsPageState extends State<RegularEventsPage>
     with SingleTickerProviderStateMixin {
   GlobalKey<FormState> _fromKey;
+  SharedPreferences _preferences;
   TextEditingController _eventAddress, _eventName, _eventDesc;
   DateTime _selectedDateFrom, _selectedDateTo;
   @override
@@ -50,7 +53,9 @@ class RegularEventsPageState extends State<RegularEventsPage>
   }
 
   void _updateField() async {
+    _preferences = await SharedPreferences.getInstance();
     FormService.regularEvent(
+            _preferences.getString('user_email'),
             _eventName.text,
             _eventAddress.text,
             _eventDesc.text,
@@ -310,64 +315,24 @@ class RegularEventsPageState extends State<RegularEventsPage>
                         )),
                       ],
                     )),
-                _getActionButtons(),
+                ActionButtons(
+                    onSave: () {
+                      if (_fromKey.currentState.validate()) {
+                        if (_selectedDateTo
+                                .difference(_selectedDateFrom)
+                                .inDays >=
+                            0) {
+                          _updateField();
+                        } else {
+                          _showDialog(context, 'Please enter valid dates!');
+                        }
+                      }
+                    },
+                    onCancel: () => _clearValues())
               ],
             ),
           ),
         ));
-  }
-
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 20.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Save"),
-                textColor: Colors.white,
-                color: Colors.blue,
-                onPressed: () {
-                  if (_fromKey.currentState.validate()) {
-                    if (_selectedDateTo.difference(_selectedDateFrom).inDays >=
-                        0) {
-                      _updateField();
-                    } else {
-                      _showDialog(context, 'Please enter valid dates!');
-                    }
-                  }
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 1,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Cancel"),
-                textColor: Colors.white,
-                color: Colors.red,
-                onPressed: () {
-                  _clearValues();
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 1,
-          ),
-        ],
-      ),
-    );
   }
 
   void _showDialog(BuildContext context, String message) {
