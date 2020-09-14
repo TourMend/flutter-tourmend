@@ -11,8 +11,8 @@ if (isset($_GET['page_number'], $_GET['keyword'])) {
     $to = ($page_number - 1) * $item_count;
 
 
-    $sql = "SELECT * FROM tbl_places WHERE placename LIKE '%$keyword%' OR dst LIKE '%$keyword%'    
- ORDER BY  placename LIMIT $item_count OFFSET $to";
+    $sql = "SELECT * FROM tbl_places WHERE name LIKE '%$keyword%' OR destination LIKE '%$keyword%'    
+ ORDER BY  name LIMIT $item_count OFFSET $to";
     $result = mysqli_query($db_conn, $sql);
 
 
@@ -27,11 +27,11 @@ if (isset($_GET['page_number'], $_GET['keyword'])) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $rowItems = array(
                     'id' => $row['id'],
-                    'placeName' => $row['placename'],
-                    'imgURL' => $row['placeimage'],
-                    'destination' => $row['dst'],
+                    'name' => $row['name'],
+                    'image' => $row['image'],
+                    'destination' => $row['destination'],
                     'info' => $row['info'],
-                    'itinerary' => $row['Itinerary'],
+                    'itinerary' => $row['itinerary'],
                     'map' => $row['map'],
                 );
                 array_push($rowArray, $rowItems);

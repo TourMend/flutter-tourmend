@@ -4,7 +4,7 @@ if (isset($_GET['email'])) {
 
     $email = $_GET['email'];
 
-    $sql = "SELECT username FROM user_info where email='$email'";
+    $sql = "SELECT username, image FROM user_info where email='$email'";
     if ($result = mysqli_query($db_conn, $sql)) {
         $row = mysqli_num_rows($result);
 
@@ -13,7 +13,8 @@ if (isset($_GET['email'])) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $output[] = $row;
             }
-            echo (json_encode(array("statusCode" => '1', "username" => $output[0]['username'], "message" => 'Data found!')));
+
+            echo (json_encode(array("statusCode" => '1', "userName" => $output[0]['username'], "image" => $output[0]['image'], "message" => 'Data found!')));
         } else {
             echo (json_encode(array("statusCode" => '0', "message" => "Data not found!")));
         }
