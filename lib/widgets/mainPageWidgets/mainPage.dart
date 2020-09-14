@@ -2,10 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:flutter_app/screens/homePage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../screens/homePage.dart';
 import '../../screens/placesPage.dart';
 import '../../screens/eventsPage.dart';
+import '../../screens/newsPage.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -17,22 +17,17 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  SharedPreferences logindata;
-  String username;
   int _selectedIndex = 0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30);
-  static List<Widget> _widgetOption = <Widget>[
+  final List<Widget> _widgetOption = <Widget>[
     HomePage(
-      title: 'Tourmend Home Page',
+      title: 'TourMend Home Page',
     ),
     PlacesPage(
       title: 'Places',
     ),
     EventsPage(),
-    Text(
-      'Index 4: News',
-      style: optionStyle,
-    ),
+    NewsPage(),
     Text(
       'Index 5: Saved',
       style: optionStyle,
@@ -43,7 +38,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    initial();
   }
 
   @override
@@ -55,17 +49,17 @@ class _MainPageState extends State<MainPage> {
         bottomNavigationBar: FFNavigationBar(
           theme: FFNavigationBarTheme(
             barBackgroundColor: Colors.white70,
-            selectedItemBorderColor: Colors.yellow,
-            selectedItemBackgroundColor: Colors.green,
+            selectedItemBorderColor: Colors.yellow[300],
+            selectedItemBackgroundColor: Colors.blue,
             selectedItemIconColor: Colors.white,
             selectedItemLabelColor: Colors.black,
           ),
-          selectedIndex: _selectedIndex,
           onSelectTab: (index) {
             setState(() {
               _selectedIndex = index;
             });
           },
+          selectedIndex: _selectedIndex,
           items: [
             FFNavigationBarItem(
               iconData: Icons.home,
@@ -84,20 +78,13 @@ class _MainPageState extends State<MainPage> {
               label: 'News',
             ),
             FFNavigationBarItem(
-              iconData: Icons.save,
-              label: 'Saved',
+              iconData: Icons.photo_library,
+              label: 'Gallery',
             ),
           ],
         ),
       ),
     );
-  }
-
-  void initial() async {
-    logindata = await SharedPreferences.getInstance();
-    setState(() {
-      username = logindata.getString('username');
-    });
   }
 
   Future<bool> _onBackPressed() {

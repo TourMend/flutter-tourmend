@@ -60,8 +60,8 @@ class _NestedTabBarState extends State<NestedTabBar>
         child: Column(children: <Widget>[
           Padding(
             child: Stack(children: <Widget>[
-              Image.asset(
-                'assets/places/${widget.placeData.placeImage}',
+              Image.network(
+                'http://10.0.2.2/TourMendWebServices/Images/places/${widget.placeData.image}',
                 fit: BoxFit.cover,
                 height: 250,
               ),
@@ -131,8 +131,8 @@ class _NestedTabBarState extends State<NestedTabBar>
                 ),
               ),
               new PhotoView(
-                  imageProvider:
-                      AssetImage('assets/maps/${widget.placeData.map}'),
+                  imageProvider: NetworkImage(
+                      'http://10.0.2.2/TourMendWebServices/Images/maps/${widget.placeData.map}'),
                   minScale: PhotoViewComputedScale.contained * 0.8,
                   maxScale: 4.0),
             ],

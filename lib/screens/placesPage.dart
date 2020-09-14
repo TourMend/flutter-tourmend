@@ -72,68 +72,73 @@ class _PlacesPageState extends State<PlacesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            padding: _showSearchBar
-                ? EdgeInsets.only(top: 55.0)
-                : EdgeInsets.only(top: 0.0),
-            child: FutureBuilder<List<PlacesData>>(
-              initialData: _placesData,
-              future: _fetchPlaces(),
-              builder: (context, snapshot) {
-                if (_isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+      body: RefreshIndicator(
+        onRefresh: () => _fetchPlaces().then((value) => {
+              // do something
+            }),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: _showSearchBar
+                  ? EdgeInsets.only(top: 55.0)
+                  : EdgeInsets.only(top: 0.0),
+              child: FutureBuilder<List<PlacesData>>(
+                initialData: _placesData,
+                future: _fetchPlaces(),
+                builder: (context, snapshot) {
+                  if (_isLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                return JsonListView(
-                  snapshot: snapshot,
-                  listData: _placesData,
-                  scrollController: _scrollController,
-                  onTapWidget: (value) => NestedTabBar(
-                    placeData: _placesData[value],
-                  ),
-                  childWidget: (value) => PlaceCard(
-                    placesData: _placesData,
-                    index: value,
-                  ),
-                );
-              },
+                  return JsonListView(
+                    snapshot: snapshot,
+                    listData: _placesData,
+                    scrollController: _scrollController,
+                    onTapWidget: (value) => NestedTabBar(
+                      placeData: _placesData[value],
+                    ),
+                    childWidget: (value) => PlaceCard(
+                      placesData: _placesData,
+                      index: value,
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          Visibility(
-            visible: _showSearchBar,
-            child: SearchBar(
-              canSearch: _canSearch,
-              searchController: _search,
-              onValueChanged: (value) {
-                if (value.isNotEmpty) {
-                  setState(() {
-                    _canSearch = true;
-                  });
-                } else {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                }
-              },
-              onSubmit: (value) {
-                if (value.isEmpty) {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                  return;
-                }
-                _goToSearch(value);
-              },
-              onTap: () {
-                _goToSearch(_search.text);
-              },
-            ),
-          )
-        ],
+            Visibility(
+              visible: _showSearchBar,
+              child: SearchBar(
+                canSearch: _canSearch,
+                searchController: _search,
+                onValueChanged: (value) {
+                  if (value.isNotEmpty) {
+                    setState(() {
+                      _canSearch = true;
+                    });
+                  } else {
+                    setState(() {
+                      _canSearch = false;
+                    });
+                  }
+                },
+                onSubmit: (value) {
+                  if (value.isEmpty) {
+                    setState(() {
+                      _canSearch = false;
+                    });
+                    return;
+                  }
+                  _goToSearch(value);
+                },
+                onTap: () {
+                  _goToSearch(_search.text);
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/modals/profileModal/userInfo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import '../../services/editInfo.dart';
-import 'package:email_validator/email_validator.dart';
+import '../../services/profileServices/editinfo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'uploadAnim.dart';
+import 'dart:ui';
+import 'dart:async';
 
 class EditProfilePage extends StatefulWidget {
-  final String title, userName, email;
+  final String title;
+  final UserInfo userInfo;
 
-  EditProfilePage({Key key, this.title, this.userName, this.email})
-      : super(key: key);
+  EditProfilePage({Key key, this.title, this.userInfo}) : super(key: key);
+  static void startProgress() {}
+
   @override
   EditProfilePageState createState() => EditProfilePageState();
 }
@@ -26,8 +31,13 @@ class EditProfilePageState extends State<EditProfilePage>
   String errMessage = 'Error Uploading Image';
   final FocusNode myFocusNode = FocusNode();
   TextEditingController _username;
-  TextEditingController _email;
   TextEditingController _password;
+  SharedPreferences currentEmail;
+  String email;
+  AnimationController progressController;
+  Animation<double> animation;
+
+  Function startProgress;
 
   @override
   void initState() {
@@ -35,8 +45,8 @@ class EditProfilePageState extends State<EditProfilePage>
     _scaffoldKey = GlobalKey();
     _formKey = GlobalKey<FormState>();
     _username = TextEditingController();
-    _email = TextEditingController();
     _password = TextEditingController();
+    email = '';
   }
 
   @override
@@ -54,32 +64,31 @@ class EditProfilePageState extends State<EditProfilePage>
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                child: Icon(
-                                  Icons.keyboard_arrow_left,
-                                  color: Colors.black,
-                                  size: 30.0,
+                        padding: EdgeInsets.only(left: 20.0, top: 20.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_left,
+                                    color: Colors.black,
+                                    size: 30.0,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Back',
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
+                                Text(
+                                  'Back',
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
+                        )),
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                       child: Stack(fit: StackFit.loose, children: <Widget>[
@@ -97,7 +106,7 @@ class EditProfilePageState extends State<EditProfilePage>
                                         fit: BoxFit.fill,
                                       )
                                     : Image.network(
-                                        "https://n8d.at/wp-content/plugins/aioseop-pro-2.4.11.1/images/default-user-image.png",
+                                        "http://10.0.2.2/TourMendWebServices/Images/profileImages/${widget.userInfo.userImage}",
                                         fit: BoxFit.fill,
                                       ),
                               ),
@@ -110,7 +119,7 @@ class EditProfilePageState extends State<EditProfilePage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 CircleAvatar(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Colors.blueAccent,
                                     radius: 25.0,
                                     child: IconButton(
                                       icon: Icon(
@@ -139,7 +148,6 @@ class EditProfilePageState extends State<EditProfilePage>
 
   void _clearValues() {
     _username.text = '';
-    _email.text = '';
     _password.text = '';
   }
 
@@ -155,8 +163,6 @@ class EditProfilePageState extends State<EditProfilePage>
   void _updatefield() async {
     EditInfo.edit(
       _username.text,
-      widget.email,
-      _email.text,
       _password.text,
     ).then((result) {
       print(result);
@@ -202,7 +208,7 @@ class EditProfilePageState extends State<EditProfilePage>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('This email already has an account!'),
+              title: Text('Error while updating profile!'),
               actions: <Widget>[
                 FlatButton(
                   child: Text("OK"),
@@ -305,49 +311,6 @@ class EditProfilePageState extends State<EditProfilePage>
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'Email ID',
-                              style: TextStyle(
-                                  fontSize: 16.0, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 2.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Flexible(
-                          child: TextFormField(
-                            controller: _email,
-                            decoration: const InputDecoration(
-                                hintText: "Enter Email ID"),
-                            enabled: !_editStatus,
-                            validator: (val) {
-                              if (val.isEmpty) {
-                                return 'Email is required!';
-                              } else if (!EmailValidator.Validate(
-                                  val, true, true)) {
-                                return 'Invalid email address!';
-                              } else
-                                return null;
-                            },
-                          ),
-                        ),
-                      ],
-                    )),
-                Padding(
-                    padding:
-                        EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
                               'Enter current password to update',
                               style: TextStyle(
                                   fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -368,7 +331,7 @@ class EditProfilePageState extends State<EditProfilePage>
                                 const InputDecoration(hintText: "Enter "),
                             enabled: !_editStatus,
                             validator: (val) => val.length < 6
-                                ? 'Password must be atleast 6 characters long!'
+                                ? 'To Update, please enter your Tourmend password!'
                                 : null,
                           ),
                         ),
@@ -396,20 +359,6 @@ class EditProfilePageState extends State<EditProfilePage>
       _image = File(image.path);
       print('Image Path $_image');
     });
-  }
-
-  Future _upload() async {
-    final uri =
-        Uri.parse("http://10.0.2.2/TourMendWebServices/profileimage.php");
-    var request = http.MultipartRequest('POST', uri);
-    var pic = await http.MultipartFile.fromPath("image", _image.path);
-    request.files.add(pic);
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      print('Image Uploaded');
-    } else {
-      print('Image Not Uploaded');
-    }
   }
 
   Widget _getActionButtons() {
@@ -477,21 +426,44 @@ class EditProfilePageState extends State<EditProfilePage>
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Upload profile pic"),
-                textColor: Colors.white,
-                color: Colors.green,
-                onPressed: () {
-                  _upload();
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
+            flex: 3,
+            child: RaisedButton(
+              child: Text(
+                "Upload profile picture",
+                style: TextStyle(fontSize: 14.5),
+              ),
+              textColor: Colors.white,
+              color: Colors.green,
+              elevation: 5.0,
+              onPressed: () {
+                if (_image != null) {
+                  showDialog(
+                      context: context,
+                      child: CustomDemo(
+                        _image,
+                      ));
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Sorry!\nSelect Your profile image '),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("OK"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
             ),
-            flex: 2,
           ),
         ],
       ),
@@ -501,7 +473,7 @@ class EditProfilePageState extends State<EditProfilePage>
   Widget _getEditIcon() {
     return GestureDetector(
       child: CircleAvatar(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blueAccent,
         radius: 14.0,
         child: Icon(
           Icons.edit,

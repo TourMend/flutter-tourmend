@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/modals/profileModal/userInfo.dart';
 import '../widgets/homePageWidgets/customListTile.dart';
 import 'profilePage.dart';
+import '../widgets/homePageWidgets/LogoutOverlay.dart';
 
-class CustomDialogBox extends StatelessWidget {
-  CustomDialogBox({this.userEmail, this.logoutFunciton});
+class CustomDialogBox extends StatefulWidget {
+  final String userEmail, userImage, userName;
 
-  final String userEmail;
-  final Function logoutFunciton;
+  CustomDialogBox({Key key, this.userEmail, this.userImage, this.userName})
+      : super(key: key);
+
+  _CustomDialogBoxState createState() => new _CustomDialogBoxState();
+}
+
+class _CustomDialogBoxState extends State<CustomDialogBox> {
+  UserInfo userInfo;
+  @override
+  void initState() {
+    super.initState();
+    userInfo = UserInfo(
+      userName: widget.userName,
+      userEmail: widget.userEmail,
+      userImage: widget.userImage,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +37,33 @@ class CustomDialogBox extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.blue,
-                child: Icon(
-                  Icons.portrait,
-                  size: 50.0,
-                ),
-              ),
-            ),
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: (widget.userImage != null)
+                    ? CircleAvatar(
+                        radius: 40.0,
+                        backgroundImage: NetworkImage(
+                          "http://10.0.2.2/TourMendWebServices/Images/profileImages/${widget.userImage}",
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 40.0,
+                        backgroundColor: Colors.blue,
+                      )),
             Center(
-              child: Text(userEmail),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    widget.userName,
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(
+                    widget.userEmail,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
             )
           ],
         ),
@@ -55,15 +87,20 @@ class CustomDialogBox extends StatelessWidget {
                       () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
+                            builder: (context) =>
+                                ProfilePage(userInfo: userInfo),
                           ))),
                   CustomListTile(Icons.notifications, 'Notification', () => {}),
-                  CustomListTile(Icons.settings, 'Setting', () => {}),
+                  CustomListTile(Icons.settings, 'Settings', () => {}),
                   CustomListTile(
-                    Icons.lock,
-                    'Log Out',
-                    logoutFunciton,
-                  ),
+                      Icons.lock,
+                      'Log Out',
+                      () => {
+                            showDialog(
+                              context: context,
+                              builder: (_) => LogoutOverlay(),
+                            )
+                          }),
                 ],
               ),
             )),

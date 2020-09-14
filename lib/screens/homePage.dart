@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/services/getUserInfo.dart';
 import 'package:location/location.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'loginPage.dart';
 import 'customDialogBox.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import '../services/profileServices/getUserInfo.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   SharedPreferences preferences;
-  String userEmail;
+  String userEmail, userImage, userName;
 
   final CameraPosition _initialPosition =
       CameraPosition(target: LatLng(28.260075, 83.970093), zoom: 13.0);
@@ -42,7 +42,28 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _getUserEmail();
+    _getUserInfo();
+  }
+
+  void _getUserInfo() async {
+    preferences = await SharedPreferences.getInstance();
+    setState(() {
+      userEmail = preferences.getString('user_email');
+    });
+
+    GetUserInfo.getUserName(userEmail).then((value) {
+      setState(() {
+        userName = value;
+      });
+      print(userName);
+    });
+
+    GetUserInfo.getUserImage(userEmail).then((value) {
+      setState(() {
+        userImage = value;
+      });
+      print(userImage);
+    });
   }
 
   @override
@@ -100,22 +121,25 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          child: CustomDialogBox(
-                            userEmail: userEmail,
-                            logoutFunciton: _handleLogout,
-                          ));
-                    },
-                    child: CircleAvatar(
-                        radius: 15.0,
-                        backgroundColor: Colors.blue,
-                        child: Icon(
-                          Icons.portrait,
-                          size: 20.0,
-                        )),
-                  ),
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            child: CustomDialogBox(
+                              userEmail: userEmail,
+                              userName: userName,
+                              userImage: userImage,
+                            ));
+                      },
+                      child: (userImage != null)
+                          ? CircleAvatar(
+                              radius: 15.0,
+                              backgroundImage: NetworkImage(
+                                  'http://10.0.2.2/TourMendWebServices/Images/profileImages/$userImage'),
+                            )
+                          : CircleAvatar(
+                              radius: 15.0,
+                              backgroundColor: Colors.blue,
+                            )),
                 ),
               ],
             ),
@@ -179,55 +203,6 @@ class _HomePageState extends State<HomePage> {
         debugPrint("Permission Denied");
       }
     }
-  }
-
-  Future<bool> _handleLogout() async {
-    return showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            actionsPadding: EdgeInsets.all(8.0),
-            buttonPadding: EdgeInsets.all(20.0),
-            title: new Text(
-              'LogOut?',
-            ),
-            content: new Text('Are you sure that you want to logout?'),
-            actions: <Widget>[
-              InkWell(
-                onTap: () => Navigator.of(context).pop(false),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 8.0),
-                  child: Text("Cancel",
-                      style: TextStyle(color: Colors.blueAccent)),
-                ),
-              ),
-              SizedBox(height: 16),
-              InkWell(
-                onTap: () async {
-                  preferences.remove('user_email');
-                  preferences.clear();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginPage(),
-                    ),
-                    (route) => false,
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 8.0),
-                  child:
-                      Text("Logout", style: TextStyle(color: Colors.redAccent)),
-                ),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
-  _getUserEmail() async {
-    preferences = await SharedPreferences.getInstance();
-    userEmail = preferences.getString('user_email');
   }
 
   @override

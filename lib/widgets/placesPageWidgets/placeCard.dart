@@ -20,8 +20,8 @@ class PlaceCard extends StatelessWidget {
         child: Column(children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: 10.0),
-            child: Image.asset(
-              'assets/places/${placesData[index].placeImage}',
+            child: Image.network(
+              'http://10.0.2.2/TourMendWebServices/Images/places/${placesData[index].image}',
               fit: BoxFit.cover,
             ),
           ),
@@ -33,7 +33,7 @@ class PlaceCard extends StatelessWidget {
                   bottom: 10.0,
                 ),
                 child: Text(
-                  placesData[index].placeName,
+                  placesData[index].name,
                   style:
                       new TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   textAlign: TextAlign.right,
