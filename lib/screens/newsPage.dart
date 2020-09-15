@@ -4,10 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
 import 'package:flutter_app/widgets/newsWidgets/newsCard.dart';
 //import 'package:flutter_app/widgets/placesPageWidgets/nestedTabBar.dart';
-import 'package:flutter_app/widgets/placesPageWidgets/searchBar.dart';
 import '../services/fetchNews.dart';
 import '../modals/newsModal/news.dart';
-import '../widgets/placesPageWidgets/searchPage.dart';
 import '../widgets/newsWidgets/detailNews.dart';
 
 class NewsPage extends StatefulWidget {
@@ -19,19 +17,16 @@ class NewsPage extends StatefulWidget {
 }
 
 class _PlacesPageState extends State<NewsPage> {
-  TextEditingController _search;
   List<NewsData> _newsData;
   ScrollController _scrollController;
   int _pageNumber;
-  bool _isLoading, _canSearch, _showSearchBar;
+  bool _isLoading, _showSearchBar;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _search = TextEditingController();
     _pageNumber = 1;
     _isLoading = true;
-    _canSearch = false;
     _showSearchBar = true;
     _newsData = List();
 
@@ -65,76 +60,41 @@ class _PlacesPageState extends State<NewsPage> {
   }
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            padding: _showSearchBar
-                ? EdgeInsets.only(top: 55.0)
-                : EdgeInsets.only(top: 0.0),
-            child: FutureBuilder<List<NewsData>>(
-              initialData: _newsData,
-              future: _fetchNews(),
-              builder: (context, snapshot) {
-                if (_isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return JsonListView(
-                  snapshot: snapshot,
-                  listData: _newsData,
-                  scrollController: _scrollController,
-                  onTapWidget: (value) => DetailNews(
-                    newsData: _newsData[value],
-                  ),
-                  childWidget: (value) => NewsCard(
-                    newsData: _newsData,
-                    index: value,
-                  ),
+      body: RefreshIndicator(
+        onRefresh: () => _fetchNews().then((value) {
+          // do something
+        }),
+        child: Container(
+          padding: _showSearchBar
+              ? EdgeInsets.only(top: 55.0)
+              : EdgeInsets.only(top: 0.0),
+          child: FutureBuilder<List<NewsData>>(
+            initialData: _newsData,
+            future: _fetchNews(),
+            builder: (context, snapshot) {
+              if (_isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ),
+              }
+
+              return JsonListView(
+                snapshot: snapshot,
+                listData: _newsData,
+                scrollController: _scrollController,
+                onTapWidget: (value) => DetailNews(
+                  newsData: _newsData[value],
+                ),
+                childWidget: (value) => NewsCard(
+                  newsData: _newsData,
+                  index: value,
+                ),
+              );
+            },
           ),
-          Visibility(
-            visible: _showSearchBar,
-            child: SearchBar(
-              canSearch: _canSearch,
-              searchController: _search,
-              onValueChanged: (value) {
-                if (value.isNotEmpty) {
-                  setState(() {
-                    _canSearch = true;
-                  });
-                } else {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                }
-              },
-              onSubmit: (value) {
-                if (value.isEmpty) {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                  return;
-                }
-                _goToSearch(value);
-              },
-              onTap: () {
-                _goToSearch(_search.text);
-              },
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
@@ -142,17 +102,6 @@ class _PlacesPageState extends State<NewsPage> {
   Future<List<NewsData>> _fetchNews() {
     return FetchNews.fetchnews(pageNumber: _pageNumber)
         .then((value) => value.news);
-  }
-
-  void _goToSearch(String value) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchPage(
-          searchString: value,
-        ),
-      ),
-    );
   }
 
   void _handleScroll() async {
@@ -171,5 +120,11 @@ class _PlacesPageState extends State<NewsPage> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

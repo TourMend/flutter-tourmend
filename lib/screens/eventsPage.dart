@@ -7,8 +7,6 @@ import '../services/eventServices/fetchEvents.dart';
 import '../services/getUserInfo.dart';
 import '../widgets/eventsWidgets/eventCard.dart';
 import '../widgets/jsonListViewWidget/jsonListView.dart';
-import '../widgets/placesPageWidgets/searchBar.dart';
-import '../widgets/placesPageWidgets/searchPage.dart';
 
 class EventsPage extends StatefulWidget {
   final String title;
@@ -25,16 +23,14 @@ class _EventPageState extends State<EventsPage> {
   int _pageNumber;
   bool _isLoading, _showButton;
   String userImage;
-  TextEditingController _search;
 
-  bool _canSearch, _showSearchBar;
+  bool _showSearchBar;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _search = TextEditingController();
-    _canSearch = false;
+
     _showSearchBar = true;
     _pageNumber = 1;
     _isLoading = true;
@@ -72,12 +68,6 @@ class _EventPageState extends State<EventsPage> {
     _getUserImage();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   void _getUserImage() async {
     preferences = await SharedPreferences.getInstance();
     var userEmail = preferences.getString('user_email');
@@ -96,65 +86,33 @@ class _EventPageState extends State<EventsPage> {
         onRefresh: () => _fetchEvents().then((value) {
           // do something
         }),
-        child: Stack(children: <Widget>[
-          Container(
-            padding: _showSearchBar
-                ? EdgeInsets.only(top: 55.0)
-                : EdgeInsets.only(top: 0.0),
-            child: FutureBuilder<List<EventsData>>(
-              initialData: eventsData,
-              future: _fetchEvents(),
-              builder: (context, snapshot) {
-                if (_isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return JsonListView(
-                  snapshot: snapshot,
-                  listData: eventsData,
-                  scrollController: _scrollController,
-                  childWidget: (value) => EventCard(
-                    eventsData: eventsData,
-                    index: value,
-                    userImage: userImage,
-                  ),
+        child: Container(
+          padding: _showSearchBar
+              ? EdgeInsets.only(top: 55.0)
+              : EdgeInsets.only(top: 0.0),
+          child: FutureBuilder<List<EventsData>>(
+            initialData: eventsData,
+            future: _fetchEvents(),
+            builder: (context, snapshot) {
+              if (_isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ),
+              }
+
+              return JsonListView(
+                snapshot: snapshot,
+                listData: eventsData,
+                scrollController: _scrollController,
+                childWidget: (value) => EventCard(
+                  eventsData: eventsData,
+                  index: value,
+                  userImage: userImage,
+                ),
+              );
+            },
           ),
-          Visibility(
-            visible: _showSearchBar,
-            child: SearchBar(
-              canSearch: _canSearch,
-              searchController: _search,
-              onValueChanged: (value) {
-                if (value.isNotEmpty) {
-                  setState(() {
-                    _canSearch = true;
-                  });
-                } else {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                }
-              },
-              onSubmit: (value) {
-                if (value.isEmpty) {
-                  setState(() {
-                    _canSearch = false;
-                  });
-                  return;
-                }
-                _goToSearch(value);
-              },
-              onTap: () {
-                _goToSearch(_search.text);
-              },
-            ),
-          ),
-        ]),
+        ),
       ),
       floatingActionButton: Visibility(
         visible: _showButton,
@@ -185,17 +143,6 @@ class _EventPageState extends State<EventsPage> {
         .then((value) => value.events);
   }
 
-  void _goToSearch(String value) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchPage(
-          searchString: value,
-        ),
-      ),
-    );
-  }
-
   void _handleScroll() async {
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
@@ -214,5 +161,11 @@ class _EventPageState extends State<EventsPage> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

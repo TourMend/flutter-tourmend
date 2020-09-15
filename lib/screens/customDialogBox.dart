@@ -30,7 +30,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
     return SimpleDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       backgroundColor: Colors.grey[300],
-      titlePadding: EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 20.0),
+      titlePadding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 10.0),
       contentPadding: EdgeInsets.only(top: 10),
       elevation: 20.0,
       title: Container(
@@ -40,7 +40,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: (widget.userImage != null)
                     ? CircleAvatar(
-                        radius: 40.0,
+                        radius: 90.0,
                         backgroundImage: NetworkImage(
                           "http://10.0.2.2/TourMendWebServices/Images/profileImages/${widget.userImage}",
                         ),

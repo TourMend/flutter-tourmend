@@ -8,8 +8,11 @@ import '../../modals/placesModal/places.dart';
 
 class SearchPage extends StatefulWidget {
   final String searchString;
+  final int selectedIndex;
 
-  SearchPage({Key key, this.searchString}) : super(key: key);
+  SearchPage(
+      {Key key, @required this.searchString, @required this.selectedIndex})
+      : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -127,6 +130,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<PlacesData>> _search() {
+    // check seletedIndex and retrun different search result
     return FetchPlaces.search(widget.searchString, pageNumber: pageNumber)
         .then((value) => value.places);
   }

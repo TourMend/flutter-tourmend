@@ -45,7 +45,7 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                                     width: 56,
                                     height: 56, // inkwell color
                                     child: Image.asset(
-                                        'assets/Images/facebook.png')),
+                                        'assets/social_media/facebook.png')),
                                 onTap: () {},
                               ),
                             ),
@@ -69,7 +69,7 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                                     width: 56,
                                     height: 56,
                                     child: Image.asset(
-                                        'assets/Images/twitter.png')),
+                                        'assets/social_media/twitter.png')),
                                 onTap: () {},
                               ),
                             ),
@@ -77,7 +77,11 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                       Container(
                           child: Text(
                         "Twitter",
-                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey[700],
+                            decoration: null,
+                            fontStyle: FontStyle.normal),
                       ))
                     ])
                   ],
