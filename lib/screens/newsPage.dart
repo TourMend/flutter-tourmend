@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
 import 'package:flutter_app/widgets/newsWidgets/newsCard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:flutter_app/widgets/placesPageWidgets/nestedTabBar.dart';
 import '../services/fetchNews.dart';
 import '../modals/newsModal/news.dart';
@@ -17,13 +18,17 @@ class NewsPage extends StatefulWidget {
 }
 
 class _PlacesPageState extends State<NewsPage> {
+  SharedPreferences email;
+  String _userEmail;
   List<NewsData> _newsData;
   ScrollController _scrollController;
   int _pageNumber;
   bool _isLoading, _showSearchBar;
+
   @override
   void initState() {
     super.initState();
+
     _scrollController = ScrollController();
     _pageNumber = 1;
     _isLoading = true;
@@ -57,6 +62,12 @@ class _PlacesPageState extends State<NewsPage> {
     });
 
     _handleScroll();
+    _getUserEmail();
+  }
+
+  void _getUserEmail() async {
+    email = await SharedPreferences.getInstance();
+    _userEmail = email.getString('user_email');
   }
 
   @override
@@ -85,6 +96,7 @@ class _PlacesPageState extends State<NewsPage> {
                 listData: _newsData,
                 scrollController: _scrollController,
                 onTapWidget: (value) => DetailNews(
+                  userEmail: _userEmail,
                   newsData: _newsData[value],
                 ),
                 childWidget: (value) => NewsCard(

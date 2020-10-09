@@ -7,8 +7,8 @@ import '../../screens/homePage.dart';
 import '../../screens/placesPage.dart';
 import '../../screens/eventsPage.dart';
 import '../../screens/newsPage.dart';
-import '../placesPageWidgets/searchBar.dart';
-import '../placesPageWidgets/searchPage.dart';
+import '../searchBar/searchBar.dart';
+import '../../screens/searchPage.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);

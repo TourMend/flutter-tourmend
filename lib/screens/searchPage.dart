@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../jsonListViewWidget/jsonListView.dart';
-import 'placeCard.dart';
-import 'nestedTabBar.dart';
-import '../../services/fetchPlaces.dart';
-import '../../modals/placesModal/places.dart';
+import '../widgets/jsonListViewWidget/jsonListView.dart';
+import '../widgets/placesPageWidgets/placeCard.dart';
+import '../widgets/placesPageWidgets/nestedTabBar.dart';
+import '../services/fetchPlaces.dart';
+import '../modals/placesModal/places.dart';
 
 class SearchPage extends StatefulWidget {
   final String searchString;

@@ -1,161 +1,61 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_app/services/commentServices/addComment.dart';
 import '../../modals/newsModal/news.dart';
+import '../commentBox/commentWidget.dart';
 
 class DetailNews extends StatefulWidget {
   final NewsData newsData;
-  DetailNews({Key key, this.newsData}) : super(key: key);
+  final String userEmail;
+  DetailNews({
+    Key key,
+    @required this.newsData,
+    @required this.userEmail,
+  }) : super(key: key);
   _DetailNewsState createState() => _DetailNewsState();
 }
 
 class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
+  TextEditingController _commentController;
+  bool _canComment;
+  GlobalKey<ScaffoldState> _scaffoldKey;
+
   @override
   void initState() {
     super.initState();
-  }
-
-  void showDialog() {
-    showGeneralDialog(
-      barrierLabel: "Barrier",
-      barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.5),
-      transitionDuration: Duration(milliseconds: 700),
-      context: context,
-      pageBuilder: (_, __, ___) {
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 188,
-            child: SizedBox.expand(
-                child: Column(
-              children: <Widget>[
-                Expanded(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10.0, right: 20.0, top: 10.0, bottom: 10.0),
-                          child: ClipOval(
-                            child: Material(
-                              // button color
-                              child: InkWell(
-                                child: SizedBox(
-                                    width: 56,
-                                    height: 56, // inkwell color
-                                    child: Image.asset(
-                                        'assets/social_media/facebook.png')),
-                                onTap: () {},
-                              ),
-                            ),
-                          )),
-                      Container(
-                          child: Text(
-                        "Facebook",
-                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                      ))
-                      // inkwell color
-                    ]),
-                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, right: 10.0, top: 10.0, bottom: 10.0),
-                          child: ClipOval(
-                            child: Material(
-                              // button color
-                              child: InkWell(
-                                child: SizedBox(
-                                    width: 56,
-                                    height: 56,
-                                    child: Image.asset(
-                                        'assets/social_media/twitter.png')),
-                                onTap: () {},
-                              ),
-                            ),
-                          )),
-                      Container(
-                          child: Text(
-                        "Twitter",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey[700],
-                            decoration: null,
-                            fontStyle: FontStyle.normal),
-                      ))
-                    ])
-                  ],
-                )),
-                Expanded(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            left: 40.0, right: 10.0, top: 10.0, bottom: 10.0),
-                        child: ButtonTheme(
-                            height: 35.0,
-                            minWidth: 310.0,
-                            child: RaisedButton(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0)),
-                              splashColor: Colors.black.withAlpha(40),
-                              child: Text(
-                                'Cancel',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13.0),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  Navigator.of(context).pop(false);
-                                  /* Route route = MaterialPageRoute(
-                                          builder: (context) => LoginScreen());
-                                      Navigator.pushReplacement(context, route);
-                                   */
-                                });
-                              },
-                            ))),
-                  ],
-                ))
-              ],
-            )),
-            margin: EdgeInsets.only(bottom: 50, left: 12, right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(40),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (_, anim, __, child) {
-        return SlideTransition(
-          position: Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim),
-          child: child,
-        );
-      },
-    );
+    _scaffoldKey = GlobalKey();
+    _commentController = TextEditingController();
+    _canComment = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Center(
-            child: Text(
-          'News ',
-          style: TextStyle(
-            decoration: TextDecoration.none,
-            color: Colors.white,
-          ),
-        )),
+        title: Padding(
+          padding: EdgeInsets.only(left: 30.0),
+          child: Center(
+              child: Text(
+            'News',
+            style: TextStyle(
+              letterSpacing: 8.0,
+              shadows: [
+                Shadow(color: Colors.grey[300], offset: Offset(10.0, 5.0))
+              ],
+              fontSize: 30.0,
+              fontFamily: 'BioRhyme',
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          )),
+        ),
         actions: <Widget>[
           FlatButton(
             child: Row(
@@ -164,29 +64,33 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                 Text(
                   "150",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+                    fontSize: 15,
+                    color: Colors.black,
                   ),
                 ),
-                Icon(
-                  Icons.mode_comment,
-                  size: 18,
-                  color: Colors.white,
+                Padding(
+                  padding: EdgeInsets.only(left: 5.0, top: 3.0),
+                  child: Icon(
+                    Icons.mode_comment,
+                    size: 19,
+                    color: Colors.black,
+                  ),
                 )
               ],
             ),
             onPressed: () {
-              // do something
+              // show all comments only
             },
           )
         ],
       ),
-      body: new Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            new Expanded(
-              child: SingleChildScrollView(
-                child: Column(children: <Widget>[
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                     child: Text(
@@ -220,61 +124,61 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                ]),
+                ],
               ),
             ),
-            new Row(
-              children: <Widget>[
-                Container(
-                  width: 410,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                  child: new Row(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(7),
-                        width: 320,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 1.0),
-                            ),
-                            contentPadding: EdgeInsets.all(10.0),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 2.0),
-                            ),
-                            hintText: 'Add a Comment',
-                            prefixIcon: Icon(Icons.edit, color: Colors.grey),
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      InkWell(
-                          onTap: () => print("2"),
-                          child: Padding(
-                              padding: EdgeInsets.all(7.0),
-                              child: const Icon(Icons.mode_comment,
-                                  color: Colors.grey))),
-                      InkWell(
-                          onTap: () => showDialog(),
-                          child: Padding(
-                              padding: EdgeInsets.all(7.0),
-                              child:
-                                  const Icon(Icons.share, color: Colors.grey))),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ]),
+          ),
+          CommentWidget(
+            commentController: _commentController,
+            canComment: _canComment,
+            onValueChanged: (value) {
+              if (value.isNotEmpty) {
+                setState(() {
+                  _canComment = true;
+                });
+              } else {
+                setState(() {
+                  _canComment = false;
+                });
+              }
+            },
+            onSubmit: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _canComment = false;
+                });
+                return;
+              }
+              _addComment(comment: value);
+            },
+            onTap: () => _addComment(comment: _commentController.text),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _showSnackBar(context, message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  void _addComment({String comment}) async {
+    AddComments.addComment(comment, widget.userEmail, widget.newsData.id)
+        .then((result) {
+      print(result);
+      if (result == '1') {
+        _showSnackBar(context, 'Comment added!');
+      } else if (result == '0') {
+        _showSnackBar(context, 'Error while adding comment!');
+      } else if (result == '2') {
+        _showSnackBar(context, 'Email while fetching user id!');
+      } else if (result == '3') {
+        _showSnackBar(context, 'Error in method!');
+      }
+    });
   }
 }
