@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import "package:flutter/material.dart";
 
-class CommentWidget extends StatefulWidget {
+class CommentInputWidget extends StatefulWidget {
   final ValueChanged<String> onValueChanged, onSubmit;
   final VoidCallback onTap;
   final TextEditingController commentController;
   final bool canComment;
 
-  CommentWidget({
+  CommentInputWidget({
     @required this.onValueChanged,
     @required this.onSubmit,
     @required this.onTap,
@@ -20,7 +20,7 @@ class CommentWidget extends StatefulWidget {
   _CommentWidgetState createState() => _CommentWidgetState();
 }
 
-class _CommentWidgetState extends State<CommentWidget> {
+class _CommentWidgetState extends State<CommentInputWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(

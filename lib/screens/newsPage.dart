@@ -112,7 +112,7 @@ class _PlacesPageState extends State<NewsPage> {
   }
 
   Future<List<NewsData>> _fetchNews() {
-    return FetchNews.fetchnews(pageNumber: _pageNumber)
+    return FetchNews.fetchNews(pageNumber: _pageNumber)
         .then((value) => value.news);
   }
 

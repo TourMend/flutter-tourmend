@@ -34,8 +34,7 @@ class PlaceCard extends StatelessWidget {
                 ),
                 child: Text(
                   placesData[index].name,
-                  style:
-                      new TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   textAlign: TextAlign.right,
                 ),
               ),

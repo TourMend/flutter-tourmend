@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/commentPage.dart';
 import 'package:flutter_app/services/commentServices/addComment.dart';
 import '../../modals/newsModal/news.dart';
-import '../commentBox/commentWidget.dart';
+import '../commentWidgets/commentInputWidget.dart';
 
 class DetailNews extends StatefulWidget {
   final NewsData newsData;
@@ -59,7 +60,6 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
         actions: <Widget>[
           FlatButton(
             child: Row(
-              // Replace with a Row for horizontal icon + text
               children: <Widget>[
                 Text(
                   "150",
@@ -79,7 +79,13 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
               ],
             ),
             onPressed: () {
-              // show all comments only
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CommentPage(
+                    newsId: widget.newsData.id,
+                  ),
+                ),
+              );
             },
           )
         ],
@@ -128,7 +134,7 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
               ),
             ),
           ),
-          CommentWidget(
+          CommentInputWidget(
             commentController: _commentController,
             canComment: _canComment,
             onValueChanged: (value) {
