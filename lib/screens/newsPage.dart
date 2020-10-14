@@ -4,7 +4,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_app/widgets/jsonListViewWidget/jsonListView.dart';
 import 'package:flutter_app/widgets/newsWidgets/newsCard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:flutter_app/widgets/placesPageWidgets/nestedTabBar.dart';
 import '../services/fetchNews.dart';
 import '../modals/newsModal/news.dart';
 import '../widgets/newsWidgets/detailNews.dart';

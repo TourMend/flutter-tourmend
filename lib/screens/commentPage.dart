@@ -7,10 +7,14 @@ import '../widgets/commentWidgets/commentCard.dart';
 
 class CommentPage extends StatefulWidget {
   final String newsId;
+  final String userEmail;
+  final Widget commentBox;
 
   CommentPage({
     Key key,
     @required this.newsId,
+    @required this.userEmail,
+    @required this.commentBox,
   }) : super(key: key);
   @override
   _CommentPageState createState() => _CommentPageState();
@@ -19,26 +23,30 @@ class CommentPage extends StatefulWidget {
 class _CommentPageState extends State<CommentPage> {
   List<CommentsData> commentsData = List();
   ScrollController _scrollController;
-  int pageNumber;
-  bool isLoading;
+  GlobalKey<ScaffoldState> _scaffoldKey;
+  int _pageNumber;
+  bool _isLoading;
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    pageNumber = 1;
-    isLoading = true;
+    _scaffoldKey = GlobalKey();
+
+    _pageNumber = 1;
+    _isLoading = true;
 
     _fetchComments().then((result) {
       if (result != null) {
         for (var place in result) {
           commentsData.add(place);
           setState(() {
-            isLoading = false;
+            _isLoading = false;
           });
         }
       } else
         setState(() {
-          isLoading = false;
+          _isLoading = false;
         });
     });
 
@@ -47,7 +55,7 @@ class _CommentPageState extends State<CommentPage> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
-          pageNumber++;
+          _pageNumber++;
         });
         _fetchComments().then((result) {
           if (result != null) {
@@ -69,35 +77,55 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: FutureBuilder<List<CommentsData>>(
-          initialData: commentsData,
-          future: _fetchComments(),
-          builder: (context, snapshot) {
-            if (isLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return JsonListView(
-              snapshot: snapshot,
-              listData: commentsData,
-              scrollController: _scrollController,
-              childWidget: (value) => CommentCard(
-                commentsData: commentsData,
-                index: value,
-              ),
-            );
-          },
-        ),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        toolbarHeight: 35.0,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 75.0),
+            child: FutureBuilder<List<CommentsData>>(
+              initialData: commentsData,
+              future: _fetchComments(),
+              builder: (context, snapshot) {
+                if (_isLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (commentsData.length > 0) {
+                  return JsonListView(
+                    snapshot: snapshot,
+                    listData: commentsData,
+                    scrollController: _scrollController,
+                    childWidget: (value) => CommentCard(
+                      commentsData: commentsData,
+                      index: value,
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Text('No comments available'),
+                  );
+                }
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 5.0,
+            child: widget.commentBox,
+          ),
+        ],
       ),
     );
   }
 
   Future<List<CommentsData>> _fetchComments() {
     return FetchComments.fetchComments(
-            pageNumber: pageNumber, newsId: widget.newsId)
+            pageNumber: _pageNumber, newsId: widget.newsId)
         .then((value) => value.comments);
   }
 }
