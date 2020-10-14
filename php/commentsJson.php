@@ -6,7 +6,7 @@ if (isset($_GET['page_number'], $_GET['news_id'])) {
 
     $news_id = $_GET['news_id'];
     $page_number = $_GET['page_number'];
-    $item_count = 3;
+    $item_count = 6;
     // array for the final response
     $response = array();
 
@@ -17,7 +17,7 @@ if (isset($_GET['page_number'], $_GET['news_id'])) {
     $result = mysqli_query($db_conn, $sql);
 
     if ($result) {
-        if (mysqli_num_rows($result) <= 3 && mysqli_num_rows($result) != 0) {
+        if (mysqli_num_rows($result) <= 6 && mysqli_num_rows($result) != 0) {
             $response['statusCode'] = '1';
             $response['message'] = 'Comments fetched successfully!';
             $rowArray =  array();
