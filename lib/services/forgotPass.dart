@@ -18,7 +18,7 @@ class ForgotPass {
         return respJson['statusCode'];
       }
     } catch (e) {
-      return ('Error' + e.toString());
+      return ('Error: ' + e.toString());
     }
   }
 
@@ -40,7 +40,7 @@ class ForgotPass {
         return respJson['statusCode'];
       }
     } catch (e) {
-      return ('Error' + e.toString());
+      return ('Error: ' + e.toString());
     }
   }
 }

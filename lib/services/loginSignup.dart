@@ -28,9 +28,15 @@ class LoginSignup {
       String username, String email, String password) async {
     try {
       const url = "http://10.0.2.2/TourMendWebServices/register.php";
-      //post data into the url
-      final response = await http.post(url,
-          body: {"username": username, "email": email, "password": password});
+      //POST
+      final response = await http.post(
+        url,
+        body: {
+          "username": username,
+          "email": email,
+          "password": password,
+        },
+      );
 
       final respJson = jsonDecode(response.body);
 

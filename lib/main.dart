@@ -11,7 +11,7 @@ class TourMendApp extends StatelessWidget {
     return MaterialApp(
       title: 'TourMend',
       theme: ThemeData(
-        primaryColor: Colors.lightGreen,
+        primaryColor: Colors.lightBlue,
         accentColor: Colors.lightBlue,
         textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
           bodyText2: GoogleFonts.montserrat(textStyle: textTheme.bodyText2),

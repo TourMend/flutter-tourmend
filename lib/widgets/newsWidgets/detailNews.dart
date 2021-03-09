@@ -87,8 +87,9 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                    ),
                     child: Text(
                       widget.newsData.headLine,
                       textAlign: TextAlign.center,
@@ -105,7 +106,8 @@ class _DetailNewsState extends State<DetailNews> with TickerProviderStateMixin {
                       fit: BoxFit.cover,
                       height: 250.0,
                     ),
-                    padding: EdgeInsets.all(10.0),
+                    padding:
+                        EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),

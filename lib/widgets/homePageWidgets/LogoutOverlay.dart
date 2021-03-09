@@ -18,8 +18,10 @@ class LogoutOverlayState extends State<LogoutOverlay>
   void initState() {
     super.initState();
     _getUserEmail();
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 450),
+    );
     scaleAnimation =
         CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
 

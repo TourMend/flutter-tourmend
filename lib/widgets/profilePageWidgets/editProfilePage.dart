@@ -420,7 +420,7 @@ class EditProfilePageState extends State<EditProfilePage>
 
   Widget _getuploadButtons() {
     return Padding(
-      padding: EdgeInsets.only(left: 120.0, right: 120.0, top: 45.0),
+      padding: EdgeInsets.only(left: 120.0, right: 120.0, top: 30.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -430,7 +430,9 @@ class EditProfilePageState extends State<EditProfilePage>
             child: RaisedButton(
               child: Text(
                 "Upload profile picture",
-                style: TextStyle(fontSize: 14.5),
+                style: TextStyle(
+                  fontSize: 12.5,
+                ),
               ),
               textColor: Colors.white,
               color: Colors.green,
@@ -438,10 +440,10 @@ class EditProfilePageState extends State<EditProfilePage>
               onPressed: () {
                 if (_image != null) {
                   showDialog(
-                      context: context,
-                      child: CustomDemo(
-                        _image,
-                      ));
+                      builder: (context) => CustomDemo(
+                            _image,
+                          ),
+                      context: context);
                 } else {
                   showDialog(
                     context: context,

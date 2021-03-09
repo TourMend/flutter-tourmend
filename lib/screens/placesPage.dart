@@ -29,7 +29,7 @@ class _PlacesPageState extends State<PlacesPage> {
     _pageNumber = 1;
     _isLoading = true;
     _showSearchBar = true;
-    _placesData = List();
+    _placesData = [];
 
     _fetchPlaces().then((result) {
       for (var place in result) {

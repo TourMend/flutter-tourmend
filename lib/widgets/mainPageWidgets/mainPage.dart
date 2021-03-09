@@ -9,6 +9,7 @@ import '../../screens/eventsPage.dart';
 import '../../screens/newsPage.dart';
 import '../searchBar/searchBar.dart';
 import '../../screens/searchPage.dart';
+import '../../screens/galleryPage.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, this.title}) : super(key: key);
@@ -26,7 +27,7 @@ class _MainPageState extends State<MainPage> {
   bool _canSearch, _showSearchBar;
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30);
+
   final List<Widget> _widgetOption = <Widget>[
     HomePage(
       title: 'TourMend Home Page',
@@ -36,10 +37,7 @@ class _MainPageState extends State<MainPage> {
     ),
     EventsPage(),
     NewsPage(),
-    Text(
-      'Index 5: Saved',
-      style: optionStyle,
-    ),
+    GalleryPage(),
   ];
   int selectedIndex = 0;
 

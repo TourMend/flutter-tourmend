@@ -143,7 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
         } else if (result == '2') {
           _clearValues();
           _showSnackBar(context, 'This email address already has an account');
-        } else {
+        } else if (result == '4') {
           _showSnackBar(context, 'Internal server error!');
         }
       });

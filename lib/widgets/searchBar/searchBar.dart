@@ -76,12 +76,12 @@ class SearchBar extends StatelessWidget {
                       : InkWell(
                           onTap: () {
                             showDialog(
-                                context: context,
-                                child: CustomDialogBox(
-                                  userEmail: userEmail,
-                                  userName: userName,
-                                  userImage: userImage,
-                                ));
+                                builder: (context) => CustomDialogBox(
+                                      userEmail: userEmail,
+                                      userName: userName,
+                                      userImage: userImage,
+                                    ),
+                                context: context);
                           },
                           child: (userImage != null)
                               ? Padding(
