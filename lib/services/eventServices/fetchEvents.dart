@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 
 class FetchEvents {
   static Future<EventsList> fetchEvents({int pageNumber}) async {
-    final List<EventsData> events = [];
+    // ignore: deprecated_member_use
+    final List<EventsData> events = List();
     try {
       final url =
           "http://10.0.2.2/TourMendWebServices/eventsJson.php?page_number=" +
