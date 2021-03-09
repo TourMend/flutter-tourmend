@@ -9,14 +9,14 @@ if (isset($_POST['email'])) {
     require_once "PHPMailer/Exception.php";
     require_once "db_config.php";
 
-    $mail = new PHPMailer(true);
+    $mail = new PHPMailer();
 
     //SMTP settings
     $mail->isSMTP();
     $mail->Host = "smtp.gmail.com";
     $mail->SMTPAuth = true;
-    $mail->Username = "kailashkandel2@gmail.com";
-    $mail->Password = "TourMend@123";
+    $mail->Username = "TourMend.MP@gmail.com";
+    $mail->Password = "Tourmend@1234";
     $mail->Port = 465; //587 for tls
     $mail->SMTPSecure = "ssl"; //next option is tls
 
@@ -37,7 +37,7 @@ if (isset($_POST['email'])) {
             $subject = "Reset Password";
             $username = $result['username'];
             $body = "Hi, $username! You have requested to reset your password. Please enter the key <b>$randomString</b> to verify that it's you and continue.";
-            $sender = "kailashkandel2@gmail.com";
+            $sender = "TourMend.MP@gmail.com";
 
             // email settings
             $mail->isHTML(true);
@@ -49,14 +49,16 @@ if (isset($_POST['email'])) {
             if ($mail->send()) {
                 echo (json_encode(array('statusCode' => '1', 'message' => 'OTP sent to mail!')));
             } else {
+
                 echo (json_encode(array('statusCode' => '3', 'message' => 'Wrong email address')));
             }
         } else {
+
             echo (json_encode(array('statusCode' => '2', 'message' => 'Server error: Can\'t update!')));
         }
     } else {
         echo (json_encode(array('statusCode' => '0', 'message' => 'Email address not registered!')));
     }
+
     mysqli_close($db_conn);
 }
-return;
